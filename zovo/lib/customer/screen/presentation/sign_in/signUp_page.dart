@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:zovo/Customer/screen/presentation/mainscreen/mainscreen.dart';
+import 'package:zovo/customer/screen/presentation/sign_in/signin_page.dart';
+import 'package:zovo/theme.dart';
 
-class SignInScreen extends StatelessWidget {
+
+
+class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Fetching screen height and width dynamically
@@ -8,29 +14,15 @@ class SignInScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.yellow, // Background color
+      backgroundColor: AppColors.primaryOrange, // Background color
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.secondaryCream),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: screenWidth * 0.05),
-            child: Center(
-              child: Text(
-                "Register",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: screenWidth * 0.04, // Responsive font size
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          )
-        ],
+        
       ),
       body: Stack(
         children: [
@@ -42,20 +34,20 @@ class SignInScreen extends StatelessWidget {
               children: [
                 SizedBox(height: screenHeight * 0.03), // Responsive spacing
                 Text(
-                  "Sign In",
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.08, // Responsive font size
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  "Sign Up",
+                  style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w900,
+                            color: AppColors.secondaryCream,
+                           fontSize: screenWidth * 0.08, // Responsive font
+                          ),
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 Text(
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do tempor",
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.04, // Responsive font size
-                    color: Colors.black54,
-                  ),
+                  style: GoogleFonts.poppins(
+                    color: AppColors.secondaryCream,
+                    fontSize: screenWidth * 0.04,
+                  )
                 ),
               ],
             ),
@@ -68,7 +60,7 @@ class SignInScreen extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.all(screenWidth * 0.05),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.secondaryCream,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: SingleChildScrollView(
@@ -76,16 +68,63 @@ class SignInScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Username Field
+                    // Full Name Field
                     TextField(
                       decoration: InputDecoration(
-                        labelText: 'Username',
+                         focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: AppColors.primaryOrange),
+                      ),
+                        focusColor: AppColors.primaryOrange,
+                        floatingLabelStyle: TextStyle(color: AppColors.primaryOrange),
+                        labelText: 'Full Name',
                         labelStyle: TextStyle(fontSize: screenWidth * 0.045), // Responsive font
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
                         filled: true,
-                        fillColor: Colors.grey[200],
+                        fillColor: AppColors.secondaryCream,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.02),
+
+                    // Password Field
+                     TextField(
+                      decoration: InputDecoration(
+                         focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: AppColors.primaryOrange),
+                      ),
+                        focusColor: AppColors.primaryOrange,
+                        floatingLabelStyle: TextStyle(color: AppColors.primaryOrange),
+                        labelText: 'Email',
+                        labelStyle: TextStyle(fontSize: screenWidth * 0.045), // Responsive font
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        filled: true,
+                        fillColor: AppColors.secondaryCream,
+                      ),
+                    ),
+                      SizedBox(height: screenHeight * 0.02),
+  TextField(
+                      decoration: InputDecoration(
+                         focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: AppColors.primaryOrange),
+                      ),
+                        focusColor: AppColors.primaryOrange,
+                        floatingLabelStyle: TextStyle(color: AppColors.primaryOrange),
+                        labelText: 'Phone number ',
+                        labelStyle: TextStyle(fontSize: screenWidth * 0.045), // Responsive font
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        filled: true,
+                        fillColor: AppColors.secondaryCream,
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.02),
@@ -94,35 +133,31 @@ class SignInScreen extends StatelessWidget {
                     TextField(
                       obscureText: true,
                       decoration: InputDecoration(
+                         focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: AppColors.primaryOrange),
+                      ),
+                        focusColor: AppColors.primaryOrange,
+                        floatingLabelStyle: TextStyle(color: AppColors.primaryOrange),
                         labelText: 'Password',
                         labelStyle: TextStyle(fontSize: screenWidth * 0.045), // Responsive font
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
                         filled: true,
-                        fillColor: Colors.grey[200],
+                        fillColor: AppColors.secondaryCream,
                       ),
                     ),
 
                     // Forgot Password
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Forgot Password?",
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.035, // Responsive font
-                          ),
-                        ),
-                      ),
-                    ),
+                 
                     SizedBox(height: screenHeight * 0.03),
 
                     // Sign-In Button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
+                        backgroundColor: AppColors.primaryOrange,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -130,10 +165,19 @@ class SignInScreen extends StatelessWidget {
                           vertical: screenHeight * 0.02, // Responsive padding
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MainPage()),
+                        );
+                      },
                       child: Text(
-                        "Sign In",
-                        style: TextStyle(fontSize: screenWidth * 0.045), // Responsive font
+                        "Sign up",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w900,
+                            color: AppColors.secondaryCream,
+                           fontSize: screenWidth * 0.045, // Responsive font
+                          ), // Responsive font
                       ),
                     ),
 
@@ -153,7 +197,11 @@ class SignInScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                             ),
-                            icon: Icon(Icons.g_mobiledata, size: screenWidth * 0.06),
+                            icon: Image.asset(
+                              'assets/images/google.webp',
+                              width: screenWidth * 0.055, // Responsive width
+                         
+                            ),
                             label: Text(
                               "Google",
                               style: TextStyle(fontSize: screenWidth * 0.04), // Responsive font
@@ -172,12 +220,17 @@ class SignInScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                             ),
-                            icon: Icon(Icons.facebook, size: screenWidth * 0.06),
+                           
                             label: Text(
-                              "Facebook",
+                              "Sign in",
                               style: TextStyle(fontSize: screenWidth * 0.04), // Responsive font
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => SignInScreen()),
+                              );
+                            },
                           ),
                         ),
                       ],

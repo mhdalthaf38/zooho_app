@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:zovo/screen/sign_in/signup_page.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:zovo/customer/screen/presentation/sign_in/signUp_page.dart';
+import 'package:zovo/customer/screen/presentation/sign_in/signin_page.dart';
+import 'package:zovo/theme.dart';
+
+
+import '../mainscreen/homescreen/home.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -10,7 +16,7 @@ class WelcomeScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.yellow,
+      backgroundColor: AppColors.secondaryCream,
       body: Column(
         children: [
           // Top Section with Logo and Text
@@ -18,31 +24,21 @@ class WelcomeScreen extends StatelessWidget {
             flex: 3,
             child: Container(
               width: double.infinity,
-              color: Colors.white,
+              color: AppColors.secondaryCream,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo
-                  Image.asset(
-                    'assets/logo.png', // Replace with your logo asset
-                    height: screenHeight * 0.15, // Responsive height
-                  ),
+                 
                   SizedBox(height: screenHeight * 0.02),
                   // Title
                   Text(
-                    "deeps",
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.08, // Responsive font size
-                      fontWeight: FontWeight.bold,
-                    ),
+                    "ZOho",
+                    style: GoogleFonts.poppins(color: AppColors.primaryOrange, fontSize: 40, fontWeight: FontWeight.bold),
                   ),
                   // Subtitle
                   Text(
-                    "BEER CAFE",
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.05, // Responsive font size
-                      fontWeight: FontWeight.w300,
-                    ),
+                    "Grab Your Offeers",
+                    style: GoogleFonts.poppins(color: AppColors.primaryText, fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -55,7 +51,7 @@ class WelcomeScreen extends StatelessWidget {
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.yellow,
+                color: AppColors.primaryOrange,
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(screenHeight * 0.03),
                 ),
@@ -71,20 +67,20 @@ class WelcomeScreen extends StatelessWidget {
                     // Welcome Text
                     Text(
                       "Welcome",
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.07, // Responsive font size
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: screenWidth * 0.09, // Responsive font size
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                      )
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     // Subtitle Text
                     Text(
                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do tempor incididunt ut labore et.",
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.04, // Responsive font size
-                        color: Colors.black54,
-                      ),
+                      style: GoogleFonts.poppins(
+                         color: Colors.white,
+                        fontSize: screenWidth * 0.05, // Responsive font size
+                      )
                     ),
                     Spacer(),
                     // Buttons Row
@@ -103,13 +99,15 @@ class WelcomeScreen extends StatelessWidget {
                               ),
                             ),
                             onPressed: () {
-                             Navigator.push(context, MaterialPageRoute(builder: (context) => SignInScreen()));
+                            
                             },
                             child: Text(
-                              "Sign In",
-                              style: TextStyle(
-                                fontSize: screenWidth * 0.045, // Responsive font size
-                              ),
+                              "For Offers",
+                              style: GoogleFonts.poppins(
+                                color: AppColors.primaryText,
+                                fontSize: screenWidth * 0.04, // Responsive font size
+                                fontWeight: FontWeight.bold,
+                              )
                             ),
                           ),
                         ),
@@ -127,13 +125,16 @@ class WelcomeScreen extends StatelessWidget {
                                 vertical: screenHeight * 0.015, // Responsive padding
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+                            },
                             child: Text(
-                              "Sign Up",
-                              style: TextStyle(
-                                fontSize: screenWidth * 0.045, // Responsive font size
-                                color: Colors.black,
-                              ),
+                              "Shop Owners",
+                              style: GoogleFonts.poppins(
+                                color: AppColors.primaryText,
+                                fontSize: screenWidth * 0.04, // Responsive font size
+                                fontWeight: FontWeight.bold,
+                              )
                             ),
                           ),
                         ),
