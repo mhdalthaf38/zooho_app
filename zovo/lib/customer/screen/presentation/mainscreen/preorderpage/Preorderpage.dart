@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:zovo/Customer/screen/presentation/mainscreen/mainscreen.dart';
+import 'package:zovo/theme.dart';
 
 
 class MyOrdersScreen extends StatelessWidget {
   final List<Order> orders = [
-    Order(id: '17061585', status: 'Order Placed', time: 'Just now', date: '', delivered: false, cancelled: false),
+    Order(id: '17061585', status: 'pending', time: 'Just now', date: '', delivered: false, cancelled: false),
     Order(id: '17061545', status: 'In the way', time: '5 hours ago', date: '', delivered: false, cancelled: false),
-    Order(id: '17061170', status: 'Delivered', time: '11 June, 2017', date: '', delivered: true, cancelled: false),
+    Order(id: '17061170', status: 'Successfull', time: '11 June, 2017', date: '', delivered: true, cancelled: false),
     Order(id: '17061170', status: 'Cancelled', time: '15 June, 2017', date: '', delivered: false, cancelled: true),
-    Order(id: '17061170', status: 'Delivered', time: '11 June, 2017', date: '', delivered: true, cancelled: false),
+    Order(id: '17061170', status: 'Successfull', time: '11 June, 2017', date: '', delivered: true, cancelled: false),
   ];
 
   @override
@@ -59,8 +61,7 @@ class OrderCard extends StatelessWidget {
 
   OrderCard({required this.order});
 
-  @override
-  Widget build(BuildContext context) {
+  @override  Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Padding(
@@ -78,13 +79,13 @@ class OrderCard extends StatelessWidget {
                 if (order.cancelled)
                   Text('(Cancelled)', style: TextStyle(color: Colors.red)),
                 if (order.delivered)
-                  Text('(Delivered)', style: TextStyle(color: Colors.green)),
+                  Text('(order placed)', style: TextStyle(color: Colors.green)),
                 if (!order.delivered && !order.cancelled)
                   Text('(${order.status})', style: TextStyle(color: Colors.orange)),
               ],
             ),
             SizedBox(height: 8),
-            Text('Order title - 19.75\$'),
+            Text('Order title - 19.75'),
             SizedBox(height: 4),
             Text(order.time.isEmpty ? order.date : order.time),
             SizedBox(height: 8),
@@ -97,7 +98,7 @@ class OrderCard extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                     ),
-                    child: Text('Track Order'),
+                    child: Text('View items',style: GoogleFonts.poppins(color: AppColors.secondaryCream, fontSize:15, fontWeight: FontWeight.w900, letterSpacing: 0.01),),
                   ),
                 if (order.delivered)
                   ElevatedButton(
@@ -105,15 +106,16 @@ class OrderCard extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                     ),
-                    child: Text('Review Order'),
+                    child: Text('Review Order',style: GoogleFonts.poppins(color: AppColors.secondaryCream, fontSize:15, fontWeight: FontWeight.bold, letterSpacing: 0.01) ,),
                   ),
                 if (order.cancelled)
                   SizedBox(), // No action for cancelled orders
                 SizedBox(width: 8),
-                OutlinedButton(
-                  onPressed: () {},
-                  child: Text('Repeat Order'),
-                ),
+                if (!order.cancelled && !order.delivered)
+                  OutlinedButton(
+                    onPressed: () {},
+                    child: Text('Accept Order',style: GoogleFonts.poppins(color: AppColors.accentGreen, fontSize:15, fontWeight: FontWeight.bold, letterSpacing: 0.01),),
+                  ),
               ],
             ),
           ],

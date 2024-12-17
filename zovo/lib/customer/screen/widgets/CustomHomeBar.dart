@@ -117,7 +117,7 @@ class CustomOFFERCard extends StatelessWidget {
                       itemBuilder: (BuildContext context) => [
                         PopupMenuItem<String>(
                           value: 'Available',
-                          child: Text('Available',style: GoogleFonts.poppins(color: const Color.fromARGB(255, 35, 117, 46), fontSize: fontSize * 1, fontWeight: FontWeight.bold),),
+                          child: Text('Available',style: GoogleFonts.poppins(color: AppColors.accentGreen, fontSize: fontSize * 1, fontWeight: FontWeight.bold),),
                         ),
                         PopupMenuItem<String>(
                           value: 'Not Available',

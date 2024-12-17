@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:zovo/Customer/screen/presentation/mainscreen/mainscreen.dart';
+import 'package:zovo/customer/screen/presentation/mainscreen/detailspage.dart';
 import 'package:zovo/customer/screen/presentation/sign_in/signin_page.dart';
+import 'package:zovo/services/Auth/Auth_services.dart';
 import 'package:zovo/theme.dart';
 
 
@@ -206,12 +209,59 @@ class SignUpScreen extends StatelessWidget {
                               "Google",
                               style: TextStyle(fontSize: screenWidth * 0.04), // Responsive font
                             ),
-                            onPressed: () {},
-                          ),
+                            onPressed: () async {
+                              try {
+                                await GoogleSignIn().signOut(); // Sign out first to force account picker
+                                final result = await AuthService().Signinwithgoogle();
+                                if (result != null) {
+                                  if (result.additionalUserInfo?.isNewUser ?? false) {
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation, secondaryAnimation) => Detailspage(),
+                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                          const begin = Offset(0.0, 1.0);
+                                          const end = Offset.zero;
+                                          const curve = Curves.easeInOut;
+                                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                          var offsetAnimation = animation.drive(tween);
+                                          return SlideTransition(
+                                            position: offsetAnimation,
+                                            child: child,
+                                          );
+                                        },
+                                        transitionDuration: const Duration(milliseconds: 500),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation, secondaryAnimation) => MainPage(),
+                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                          const begin = Offset(0.0, 1.0);
+                                          const end = Offset.zero;
+                                          const curve = Curves.easeInOut;
+                                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                          var offsetAnimation = animation.drive(tween);
+                                          return SlideTransition(
+                                            position: offsetAnimation,
+                                            child: child,
+                                          );
+                                        },
+                                        transitionDuration: const Duration(milliseconds: 500),
+                                      ),
+                                    );
+                                  }
+                                }
+                              } catch (e) {
+                                print('Error signing in with Google: $e');
+                              }
+                            },                          ),
                         ),
                         SizedBox(width: screenWidth * 0.02),
                         Expanded(
-                          child: OutlinedButton.icon(
+                          child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               padding: EdgeInsets.symmetric(
                                 vertical: screenHeight * 0.015, // Responsive padding
@@ -220,8 +270,7 @@ class SignUpScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                             ),
-                           
-                            label: Text(
+                            child: Text(
                               "Sign in",
                               style: TextStyle(fontSize: screenWidth * 0.04), // Responsive font
                             ),
@@ -243,5 +292,4 @@ class SignUpScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-}
+  }}

@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zovo/customer/screen/presentation/mainscreen/mainscreen.dart';
+import 'package:zovo/customer/screen/presentation/sign_in/signUp_page.dart';
 import 'package:zovo/theme.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -34,7 +36,7 @@ class ProfilePage extends StatelessWidget {
           ),
           // Back Icon
           Padding(
-            padding: EdgeInsets.all(screenWidth * 0.04),
+            padding: EdgeInsets.all(screenWidth * 0.08),
             child: GestureDetector(
               onTap: () {
                Navigator.of(context).pushAndRemoveUntil(
@@ -46,6 +48,26 @@ class ProfilePage extends StatelessWidget {
                 Icons.arrow_back,
                 color: AppColors.secondaryCream,
                 size: screenWidth * 0.08,
+              ),
+            ),
+          ),
+          // Sign Out Icon
+          Positioned(
+            
+            top: screenWidth * 0.04,
+            right: screenWidth * 0.04,
+            child: GestureDetector(
+              onTap: () {
+                FirebaseAuth.instance.signOut().then((value) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) =>  SignUpScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                });
+              },
+              child:Padding(
+                padding:  EdgeInsets.all(screenWidth * 0.04),
+                child: ImageIcon( AssetImage("assets/images/log-out.png",),color: AppColors.accentRed,size: screenWidth * 0.08,),
               ),
             ),
           ),
@@ -161,7 +183,6 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
-
   // Function to build stats widget
   Widget _buildStat(String number, String label, double screenWidth) {
     return Column(

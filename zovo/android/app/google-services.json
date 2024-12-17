@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "162718586351",
+    "project_id": "zoho-9e3e8",
+    "storage_bucket": "zoho-9e3e8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162718586351:android:582d0ba136b8af05fe121a",
+        "android_client_info": {
+          "package_name": "com.example.zovo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABFeF4UTTM7bpD3n5qmyUjQuVNXc1vy80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
