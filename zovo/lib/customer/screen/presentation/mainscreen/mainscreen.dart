@@ -53,8 +53,7 @@ class _MainPageState extends State<MainPage> {
         ][_currentIndex],
 
         // Conditionally render the FloatingActionButton
-       floatingActionButton:  _currentIndex == 0
-            ?
+       floatingActionButton: 
        Padding(
           padding: EdgeInsets.all(screenWidth * 0.025),
           child: SizedBox(
@@ -73,16 +72,15 @@ class _MainPageState extends State<MainPage> {
               ),
             ),
           ),
-        ): null,
+        ),
      
 
 
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
         // Conditionally render the BottomAppBar
-        bottomNavigationBar: _currentIndex == 0
-            ? BottomAppBar(
-              height: screenHeight * 0.07,
+        bottomNavigationBar: BottomAppBar(
+              height: screenHeight * 0.08,
                 color: AppColors.primaryOrange,
                 shape: const CircularNotchedRectangle(),
                 child: Row(
@@ -128,7 +126,7 @@ class _MainPageState extends State<MainPage> {
                   ],
                 ),
               )
-            : null, // Hide BottomAppBar if not on HomeScreen
+            , // Hide BottomAppBar if not on HomeScreen
       ),
     );
   }}

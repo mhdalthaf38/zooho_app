@@ -13,6 +13,7 @@ void showPopup(BuildContext context) {
     ),
     builder: (BuildContext context) {
       return Container(
+        decoration: BoxDecoration(color: AppColors.secondaryCream,borderRadius: BorderRadius.circular(20)),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min, // Make the sheet content compact

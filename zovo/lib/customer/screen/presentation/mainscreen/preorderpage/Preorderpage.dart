@@ -16,33 +16,31 @@ class MyOrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-             Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const MainPage()),
-        (Route<dynamic> route) => false, // Clears all previous routes
-      );
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+               Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const MainPage()),
+          (Route<dynamic> route) => false,
+        );
+            },
+          ),
+          backgroundColor: AppColors.primaryOrange,
+          title: Text("My Order's", style: TextStyle(color: Colors.white)),
+          centerTitle: true,
+          elevation: 0,
+        ),
+        body: ListView.builder(
+          itemCount: orders.length,
+          itemBuilder: (context, index) {
+            return OrderCard(order: orders[index]);
           },
         ),
-        backgroundColor: Colors.orangeAccent,
-        title: Text("My Order's", style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: ListView.builder(
-        itemCount: orders.length,
-        itemBuilder: (context, index) {
-          return OrderCard(order: orders[index]);
-        },
-      ),
-      backgroundColor: Colors.grey.shade100,
+        backgroundColor: AppColors.primaryOrange,
     );
   }
-}
-
-class Order {
+}class Order {
   final String id, status, time, date;
   final bool delivered, cancelled;
 
@@ -63,6 +61,7 @@ class OrderCard extends StatelessWidget {
 
   @override  Widget build(BuildContext context) {
     return Card(
+      color: AppColors.secondaryCream,
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -77,11 +76,11 @@ class OrderCard extends StatelessWidget {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 if (order.cancelled)
-                  Text('(Cancelled)', style: TextStyle(color: Colors.red)),
+                  Text('(Cancelled)', style: TextStyle(color: AppColors.accentRed)),
                 if (order.delivered)
-                  Text('(order placed)', style: TextStyle(color: Colors.green)),
+                  Text('(order placed)', style: TextStyle(color: AppColors.accentGreen)),
                 if (!order.delivered && !order.cancelled)
-                  Text('(${order.status})', style: TextStyle(color: Colors.orange)),
+                  Text('(${order.status})', style: TextStyle(color: AppColors.primaryOrange)),
               ],
             ),
             SizedBox(height: 8),
@@ -96,7 +95,7 @@ class OrderCard extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: AppColors.primaryOrange,
                     ),
                     child: Text('View items',style: GoogleFonts.poppins(color: AppColors.secondaryCream, fontSize:15, fontWeight: FontWeight.w900, letterSpacing: 0.01),),
                   ),
@@ -104,7 +103,7 @@ class OrderCard extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: AppColors.primaryOrange,
                     ),
                     child: Text('Review Order',style: GoogleFonts.poppins(color: AppColors.secondaryCream, fontSize:15, fontWeight: FontWeight.bold, letterSpacing: 0.01) ,),
                   ),

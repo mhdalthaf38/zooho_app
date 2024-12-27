@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:zovo/Customer/screen/presentation/mainscreen/mainscreen.dart';
-import 'package:zovo/customer/screen/presentation/mainscreen/detailspage.dart';
+import 'package:zovo/customer/screen/presentation/mainscreen/collecting%20details/detailspage.dart';
+
 import 'package:zovo/customer/screen/presentation/sign_in/signin_page.dart';
 import 'package:zovo/services/Auth/Auth_services.dart';
 import 'package:zovo/theme.dart';
 
 
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
+  @override
+  _SignUpScreenState createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     // Fetching screen height and width dynamically
@@ -71,92 +79,8 @@ class SignUpScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Full Name Field
-                    TextField(
-                      decoration: InputDecoration(
-                         focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(
-                          color: AppColors.primaryOrange),
-                      ),
-                        focusColor: AppColors.primaryOrange,
-                        floatingLabelStyle: TextStyle(color: AppColors.primaryOrange),
-                        labelText: 'Full Name',
-                        labelStyle: TextStyle(fontSize: screenWidth * 0.045), // Responsive font
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        filled: true,
-                        fillColor: AppColors.secondaryCream,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.02),
-
-                    // Password Field
-                     TextField(
-                      decoration: InputDecoration(
-                         focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(
-                          color: AppColors.primaryOrange),
-                      ),
-                        focusColor: AppColors.primaryOrange,
-                        floatingLabelStyle: TextStyle(color: AppColors.primaryOrange),
-                        labelText: 'Email',
-                        labelStyle: TextStyle(fontSize: screenWidth * 0.045), // Responsive font
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        filled: true,
-                        fillColor: AppColors.secondaryCream,
-                      ),
-                    ),
-                      SizedBox(height: screenHeight * 0.02),
-  TextField(
-                      decoration: InputDecoration(
-                         focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(
-                          color: AppColors.primaryOrange),
-                      ),
-                        focusColor: AppColors.primaryOrange,
-                        floatingLabelStyle: TextStyle(color: AppColors.primaryOrange),
-                        labelText: 'Phone number ',
-                        labelStyle: TextStyle(fontSize: screenWidth * 0.045), // Responsive font
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        filled: true,
-                        fillColor: AppColors.secondaryCream,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.02),
-
-                    // Password Field
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                         focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(
-                          color: AppColors.primaryOrange),
-                      ),
-                        focusColor: AppColors.primaryOrange,
-                        floatingLabelStyle: TextStyle(color: AppColors.primaryOrange),
-                        labelText: 'Password',
-                        labelStyle: TextStyle(fontSize: screenWidth * 0.045), // Responsive font
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        filled: true,
-                        fillColor: AppColors.secondaryCream,
-                      ),
-                    ),
-
-                    // Forgot Password
-                 
-                    SizedBox(height: screenHeight * 0.03),
-
+                   
+                  
                     // Sign-In Button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -168,50 +92,16 @@ class SignUpScreen extends StatelessWidget {
                           vertical: screenHeight * 0.02, // Responsive padding
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MainPage()),
-                        );
-                      },
-                      child: Text(
-                        "Sign up",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w900,
-                            color: AppColors.secondaryCream,
-                           fontSize: screenWidth * 0.045, // Responsive font
-                          ), // Responsive font
-                      ),
-                    ),
-
-                    SizedBox(height: screenHeight * 0.02),
-
-                    // Google and Facebook Buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            style: OutlinedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.015, // Responsive padding
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            icon: Image.asset(
-                              'assets/images/google.webp',
-                              width: screenWidth * 0.055, // Responsive width
-                         
-                            ),
-                            label: Text(
-                              "Google",
-                              style: TextStyle(fontSize: screenWidth * 0.04), // Responsive font
-                            ),
-                            onPressed: () async {
+                     onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
                               try {
-                                await GoogleSignIn().signOut(); // Sign out first to force account picker
+                                final GoogleSignIn googleSignIn = GoogleSignIn(
+                                  clientId: '1034567890-abcdefghijklmnopqrstuvwxyz1234567.apps.googleusercontent.com',
+                                  scopes: ['email', 'profile']
+                                );
+                                await googleSignIn.signOut(); // Sign out first to force account picker
                                 final result = await AuthService().Signinwithgoogle();
                                 if (result != null) {
                                   if (result.additionalUserInfo?.isNewUser ?? false) {
@@ -256,34 +146,33 @@ class SignUpScreen extends StatelessWidget {
                                 }
                               } catch (e) {
                                 print('Error signing in with Google: $e');
+                              } finally {
+                                setState(() {
+                                  isLoading = false;
+                                });
                               }
-                            },                          ),
-                        ),
-                        SizedBox(width: screenWidth * 0.02),
-                        Expanded(
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.015, // Responsive padding
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            child: Text(
-                              "Sign in",
-                              style: TextStyle(fontSize: screenWidth * 0.04), // Responsive font
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => SignInScreen()),
-                              );
-                            },
+                            },                      child: isLoading == true ? CircularProgressIndicator(color: AppColors.secondaryCream,):  Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/google.webp',
+                            width: screenWidth * 0.055,
                           ),
-                        ),
-                      ],
-                    ),
+                          SizedBox(width: screenWidth * 0.02),
+                          Text(
+                            "Sign up with Google",
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.secondaryCream,
+                              fontSize: screenWidth * 0.045,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),                    SizedBox(height: screenHeight * 0.02),
+
+                    // Google and Facebook Buttons
+                   
                   ],
                 ),
               ),
