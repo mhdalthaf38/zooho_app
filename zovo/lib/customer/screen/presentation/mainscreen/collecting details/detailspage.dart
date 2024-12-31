@@ -21,6 +21,7 @@ class Detailspage extends StatelessWidget {
     final TextEditingController _shopNameController = TextEditingController();
     final TextEditingController _LocationController = TextEditingController();
     final TextEditingController _phonenumberController = TextEditingController();
+    final TextEditingController _shopDescriptionController = TextEditingController();
     // Fetching screen height and width dynamically
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -145,8 +146,27 @@ class Detailspage extends StatelessWidget {
                     SizedBox(height: screenHeight * 0.02),
 
                
-
-                  
+TextField(
+  controller: _shopDescriptionController,
+  maxLines: 3,
+  decoration: InputDecoration(
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(15),
+      borderSide: BorderSide(
+        color: AppColors.primaryOrange),
+    ),
+    focusColor: AppColors.primaryOrange,
+    floatingLabelStyle: TextStyle(color: AppColors.primaryOrange),
+    labelText: 'Write about your shop',
+    labelStyle: TextStyle(fontSize: screenWidth * 0.045),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(15),
+    ),
+    filled: true,
+    fillColor: AppColors.secondaryCream,
+  ),
+),
+SizedBox(height: screenHeight * 0.02),                  
                  
                     SizedBox(height: screenHeight * 0.03),
 
@@ -169,12 +189,13 @@ class Detailspage extends StatelessWidget {
                           'shopName': _shopNameController.text,
                           'location': _LocationController.text,
                           'phoneNumber': _phonenumberController.text,
+                          'shopDescription': _shopDescriptionController.text,
                         });
 
                         // Navigate to the next screen
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => MainPage()), // Replace NextScreen with your next screen widget
+                          MaterialPageRoute(builder: (context) => imageDetailspage()), // Replace NextScreen with your next screen widget
                         );
                         },
                       child: Text(

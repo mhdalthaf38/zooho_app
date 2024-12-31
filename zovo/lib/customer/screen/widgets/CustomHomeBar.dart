@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zovo/theme.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CustomOFFERCard extends StatelessWidget {
   final String imageUrl;
@@ -10,17 +11,37 @@ class CustomOFFERCard extends StatelessWidget {
   final String cuisine;
   final String distance;
   final String? offer;
+  final String email;
+  final String collectionName ;
+  final String id;
 
   const CustomOFFERCard({
     super.key,
+    required this.id,
+    required this.collectionName,
     required this.imageUrl,
     required this.title,
     required this.available,
     required this.cuisine,
     required this.distance,
     required this.rate,
+    required this.email,
     this.offer,
   });
+
+  Future<void> updateAvailability(bool isAvailable) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection(collectionName)
+          .doc(email)
+          .collection('items').doc(id)
+
+         .update({'Available': isAvailable});
+       
+    } catch (e) {
+      print('Error updating availability: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +68,7 @@ class CustomOFFERCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.primaryOrange,
               image: DecorationImage(
-                image: AssetImage(imageUrl),
-                fit: BoxFit.cover,
+                image: NetworkImage(imageUrl),                fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(25),
             ),
@@ -73,7 +93,7 @@ class CustomOFFERCard extends StatelessWidget {
                           style: GoogleFonts.poppins(color: Colors.white, fontSize: imageSize * 0.12, fontWeight: FontWeight.w900, letterSpacing: 0.01),
                         ),
                         Text(
-                          'AT ₹179',
+                          'AT ₹$rate',
                           style: GoogleFonts.poppins(color: Colors.white, fontSize: imageSize * 0.14, fontWeight: FontWeight.w900, letterSpacing: 0.01),
                         ),
                       ],
@@ -103,7 +123,6 @@ class CustomOFFERCard extends StatelessWidget {
                       ),
                     ),
                     PopupMenuButton<String>(
-                      
                       color: AppColors.secondaryCream,
                       icon: Icon(
                         Icons.more_vert,
@@ -111,9 +130,11 @@ class CustomOFFERCard extends StatelessWidget {
                         size: fontSize * 1.5,
                       ),
                       onSelected: (value) {
-                        // Handle the selection
-                        print('Selected: $value');
-                        // You can perform actions based on selected value here
+                        if (value == 'Available') {
+                          updateAvailability(true);
+                        } else if (value == 'Not Available') {
+                          updateAvailability(false);
+                        }
                       },
                       itemBuilder: (BuildContext context) => [
                         PopupMenuItem<String>(
@@ -130,15 +151,15 @@ class CustomOFFERCard extends StatelessWidget {
                 ),
                
                 Text(
-                  '$available',
+                  available,
                   style: GoogleFonts.poppins(
-                    color: AppColors.secondaryText,
+                    color: available == 'Available' ? AppColors.accentGreen : AppColors.accentRed,fontWeight: FontWeight.bold,
                     fontSize: fontSize * 1,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  '$offer / ₹$rate',
+                  offer != null ? '$offer / ₹$rate' : '₹$rate',
                   style: GoogleFonts.poppins(
                     color: AppColors.primaryOrange,
                     fontSize: fontSize * 0.8,
@@ -153,5 +174,4 @@ class CustomOFFERCard extends StatelessWidget {
         ],
       ),
     );
-  }
-}
+  }}

@@ -30,6 +30,7 @@ class ProfilePage extends StatelessWidget {
         String shopName = snapshot.data!['shopName'] ?? '';
         String shopAddress = snapshot.data!['location'] ?? '';
         String shopPhone = snapshot.data!['phoneNumber'] ?? '';
+        String shopDescription = snapshot.data!['shopDescription'] ?? '';
    
 
 
@@ -52,7 +53,7 @@ class ProfilePage extends StatelessWidget {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: NetworkImage(images[index]),
-                            fit: BoxFit.contain,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       );
@@ -189,22 +190,14 @@ class ProfilePage extends StatelessWidget {
                           _buildSectionTitle('Discrition', screenWidth),
                           SizedBox(height: screenHeight * 0.01),
                           _buildSectionContent(
-                            'A Burger King store is a fast-food restaurant chain that serves a variety of burgers, sandwiches, salads, and breakfast items. Founded in 1954, Burger King is the second-largest fast-food hamburger chain in the world',
+                            '$shopDescription',
                             screenWidth,
                           ),
                           SizedBox(height: screenHeight * 0.03),
-                          // Self Summary Section
-                          _buildSectionTitle('SELF SUMMARY', screenWidth),
-                          SizedBox(height: screenHeight * 0.01),
-                          _buildSectionContent(
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in magna sit amet magna tincidunt ultrices.',
-                            screenWidth,
-                          ),
-                          SizedBox(height: screenHeight * 0.01),
-                          _buildSectionContent(
-                            'Sed lobortis libero lacus, posuere sollicitudin tellus vestibulum et. Nam ullamcorper vehicula laoreet.',
-                            screenWidth,
-                          ),
+                        
+                          
+                          
+                
                         ],
                       ),
                     ),

@@ -141,7 +141,7 @@ class _imageDetailspageState extends State<imageDetailspage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Detailspage()));
+                                      builder: (context) => MainPage()));
                             }
                           } catch (e) {
                             print(e);

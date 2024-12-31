@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zovo/customer/screen/presentation/mainscreen/collecting%20details/collectingshopimages.dart';
+import 'package:zovo/customer/screen/presentation/mainscreen/collecting%20details/detailspage.dart';
 import 'package:zovo/customer/screen/presentation/mainscreen/mainscreen.dart';
 import 'package:zovo/customer/screen/presentation/sign_in/welcomescreen.dart';
 import 'package:zovo/firebase_options.dart';
@@ -35,13 +38,29 @@ class MyApp extends StatelessWidget {
       ),
       home: StreamBuilder<firebase_auth.User?>(
         stream: firebase_auth.FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return MainPage();
+        builder: (context, data) {
+          if (data.hasData) {
+            return StreamBuilder<DocumentSnapshot?>(
+              stream:FirebaseFirestore.instance
+          .collection('shops')
+          .doc(data.data?.email)
+          .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.data?.exists?? false || snapshot.data?['shopname'] != null) {
+
+                  return MainPage();
+
+                }
+
+
+                
+                return Detailspage();
+              },
+            );
           }
           return WelcomeScreen();
         },
       ),
     );
   }
-}
+} 

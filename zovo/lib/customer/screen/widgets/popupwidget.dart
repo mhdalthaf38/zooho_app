@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:zovo/customer/screen/presentation/add_items/add_menu_items/menu_items.dart';
+import 'package:zovo/customer/screen/presentation/add_items/add_offer_items/add_offerItems.dart';
+import 'package:zovo/customer/screen/presentation/add_items/todayoffersitem/todayoffers.dart';
 import 'package:zovo/theme.dart';
 
 void showPopup(BuildContext context) {
@@ -32,7 +35,8 @@ void showPopup(BuildContext context) {
               leading: const Icon(Icons.add, color: Colors.orange),
               title: Text('Add Today Offers', style: GoogleFonts.poppins()),
               onTap: () {
-                Navigator.pop(context); // Close the popup
+
+               Navigator.push(context, MaterialPageRoute(builder: (context)=> Todayoffers())) ;// Close the popup
                 // Perform Add Item Action
               },
             ),
@@ -40,7 +44,7 @@ void showPopup(BuildContext context) {
                leading: const Icon(Icons.add, color: Colors.orange),
               title: Text('Add new offers', style: GoogleFonts.poppins()),
               onTap: () {
-                Navigator.pop(context); // Close the popup
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> AddOfferItems())) ;// Close the popup
                 // Perform Upload File Action
               },
             ),
@@ -48,8 +52,7 @@ void showPopup(BuildContext context) {
              leading: const Icon(Icons.add, color: Colors.orange),
               title: Text('Add new Items', style: GoogleFonts.poppins()),
               onTap: () {
-                Navigator.pop(context); // Close the popup
-                // Perform Upload File Action
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddMenuItem(),));
               },
             ),
             ListTile(
