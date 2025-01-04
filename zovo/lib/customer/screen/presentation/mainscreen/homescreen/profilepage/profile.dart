@@ -31,6 +31,7 @@ class ProfilePage extends StatelessWidget {
         String shopAddress = snapshot.data!['location'] ?? '';
         String shopPhone = snapshot.data!['phoneNumber'] ?? '';
         String shopDescription = snapshot.data!['shopDescription'] ?? '';
+        String shoparea = snapshot.data!['area'] ?? '';
    
 
 
@@ -140,11 +141,28 @@ class ProfilePage extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    '$shopAddress',
+                                    '$shopAddress , $shoparea',
                                     style: GoogleFonts.poppins(
                                       color: AppColors.primaryText,
                                       fontSize: screenWidth * 0.035,
                                     ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.phone,
+                                        color: AppColors.primaryOrange,
+                                        size: screenWidth * 0.04,
+                                      ),
+                                      SizedBox(width: screenWidth * 0.02),
+                                      Text(
+                                        shopPhone,
+                                        style: GoogleFonts.poppins(
+                                          color: AppColors.primaryText,
+                                          fontSize: screenWidth * 0.035,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

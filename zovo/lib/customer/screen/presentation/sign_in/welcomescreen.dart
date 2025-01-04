@@ -5,6 +5,7 @@ import 'package:zovo/customer/screen/presentation/sign_in/signin_page.dart';
 import 'package:zovo/theme.dart';
 
 
+
 import '../mainscreen/homescreen/home.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -32,12 +33,12 @@ class WelcomeScreen extends StatelessWidget {
                   SizedBox(height: screenHeight * 0.02),
                   // Title
                   Text(
-                    "ZOho",
+                    "ZOOho",
                     style: GoogleFonts.poppins(color: AppColors.primaryOrange, fontSize: 40, fontWeight: FontWeight.bold),
                   ),
                   // Subtitle
                   Text(
-                    "Grab Your Offeers",
+                    "Your Bussiness Partner",
                     style: GoogleFonts.poppins(color: AppColors.primaryText, fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -76,7 +77,7 @@ class WelcomeScreen extends StatelessWidget {
                     SizedBox(height: screenHeight * 0.01),
                     // Subtitle Text
                     Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do tempor incididunt ut labore et.",
+                      "We here to help you to grow your bussiness",
                       style: GoogleFonts.poppins(
                          color: Colors.white,
                         fontSize: screenWidth * 0.05, // Responsive font size
@@ -87,37 +88,13 @@ class WelcomeScreen extends StatelessWidget {
                     Row(
                       children: [
                         // Sign In Button
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.015, // Responsive padding
-                              ),
-                            ),
-                            onPressed: () {
-                            
-                            },
-                            child: Text(
-                              "For Offers",
-                              style: GoogleFonts.poppins(
-                                color: AppColors.primaryText,
-                                fontSize: screenWidth * 0.04, // Responsive font size
-                                fontWeight: FontWeight.bold,
-                              )
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: screenWidth * 0.04),
+                     
                         // Sign Up Button
                         Expanded(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                              
-                              side: BorderSide(color: Colors.black),
+                              side: BorderSide(color: AppColors.primaryText),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
@@ -129,7 +106,7 @@ class WelcomeScreen extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
                             },
                             child: Text(
-                              "Shop Owners",
+                              "Upgrade your bussiness",
                               style: GoogleFonts.poppins(
                                 color: AppColors.primaryText,
                                 fontSize: screenWidth * 0.04, // Responsive font size

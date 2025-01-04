@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zovo/customer/screen/presentation/mainscreen/collecting%20details/collectingshopimages.dart';
 import 'package:zovo/customer/screen/presentation/mainscreen/collecting%20details/detailspage.dart';
+import 'package:zovo/customer/screen/presentation/mainscreen/collecting%20details/placepicker.dart';
 import 'package:zovo/customer/screen/presentation/mainscreen/mainscreen.dart';
 import 'package:zovo/customer/screen/presentation/sign_in/welcomescreen.dart';
 import 'package:zovo/firebase_options.dart';
@@ -41,20 +44,30 @@ class MyApp extends StatelessWidget {
         builder: (context, data) {
           if (data.hasData) {
             return StreamBuilder<DocumentSnapshot?>(
-              stream:FirebaseFirestore.instance
-          .collection('shops')
-          .doc(data.data?.email)
-          .snapshots(),
+              stream: FirebaseFirestore.instance
+                .collection('shops')
+                .doc(data.data?.email)
+                .snapshots(),
               builder: (context, snapshot) {
-                if (snapshot.data?.exists?? false || snapshot.data?['shopname'] != null) {
-
-                  return MainPage();
-
+                if (snapshot.hasData && snapshot.data != null && snapshot.data!.data() != null) {
+                  Map<String, dynamic> shopData = snapshot.data!.data() as Map<String, dynamic>;
+                  if(!shopData.containsKey('shopName') || shopData['shopName'] == null || shopData['shopName'] == ''){
+                    return Detailspage();
+                  }
+                  else if(!shopData.containsKey('latitude')){
+                    return PlacePicker();
+                  }else if(!shopData.containsKey('longitude')){
+                    return PlacePicker();
+                  }
+                  else if(!shopData.containsKey('shopImages')){
+                    return imageDetailspage();
+                  }else{
+                    return MainPage();
+                  }       
+                }else{
+                 return Detailspage();
                 }
-
-
-                
-                return Detailspage();
+               
               },
             );
           }
@@ -63,4 +76,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-} 
+}
