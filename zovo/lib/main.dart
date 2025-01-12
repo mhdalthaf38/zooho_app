@@ -6,11 +6,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:zovo/customer/screen/presentation/mainscreen/collecting%20details/collectingshopimages.dart';
-import 'package:zovo/customer/screen/presentation/mainscreen/collecting%20details/detailspage.dart';
-import 'package:zovo/customer/screen/presentation/mainscreen/collecting%20details/placepicker.dart';
-import 'package:zovo/customer/screen/presentation/mainscreen/mainscreen.dart';
-import 'package:zovo/customer/screen/presentation/sign_in/welcomescreen.dart';
+import 'package:zovo/customer/view/homescreen/Userhompage.dart';
+import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/collectingshopimages.dart';
+import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/detailspage.dart';
+import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/placepicker.dart';
+import 'package:zovo/shopowner/screen/presentation/mainscreen/mainscreen.dart';
+import 'package:zovo/shopowner/screen/presentation/sign_in/welcomescreen.dart';
 import 'package:zovo/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
@@ -64,8 +65,24 @@ class MyApp extends StatelessWidget {
                   }else{
                     return MainPage();
                   }       
-                }else{
-                 return Detailspage();
+                }else {
+                 return  StreamBuilder<DocumentSnapshot?>(
+              stream: FirebaseFirestore.instance
+                .collection('customers')
+                .doc(data.data?.email)
+                .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data != null && snapshot.data!.data() != null) {
+                  Map<String, dynamic> shopData = snapshot.data!.data() as Map<String, dynamic>;
+                  if(shopData.containsKey('email') || shopData['email'] != null || shopData['email'] != ''){
+                    return HomePage();
+                  }else{
+                    return WelcomeScreen();
+                  }
+                }else {
+                  return WelcomeScreen();
+                }
+              });
                 }
                
               },
