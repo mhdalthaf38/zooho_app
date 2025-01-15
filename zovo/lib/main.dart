@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zovo/customer/view/homescreen/Userhompage.dart';
+import 'package:zovo/customer/view/homescreen/homescreen.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/collectingshopimages.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/detailspage.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/placepicker.dart';
@@ -75,7 +76,7 @@ class MyApp extends StatelessWidget {
                 if (snapshot.hasData && snapshot.data != null && snapshot.data!.data() != null) {
                   Map<String, dynamic> shopData = snapshot.data!.data() as Map<String, dynamic>;
                   if(shopData.containsKey('email') || shopData['email'] != null || shopData['email'] != ''){
-                    return HomePage();
+                    return UserHome();
                   }else{
                     return WelcomeScreen();
                   }

@@ -232,6 +232,7 @@ class _TodayoffersState extends State<Todayoffers> {
 
                   // Add to offers_today collection
                   await _firestore.collection('offers_today').doc('$email$selectedItem').set({
+                    'email': email,
                     'item_id': selectedItem,
                     'item_name': selectedItemName,
                     'item_image': selectedItemImage,

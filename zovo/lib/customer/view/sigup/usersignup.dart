@@ -123,7 +123,7 @@ class _UsersignupState extends State<Usersignup> {
                                                       await userRef.set(userData);                           Navigator.push(
                               context,
                               PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
+                                pageBuilder: (context, animation, secondaryAnimation) => UserHome(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                   const begin = Offset(0.0, 1.0);
                                   const end = Offset.zero;

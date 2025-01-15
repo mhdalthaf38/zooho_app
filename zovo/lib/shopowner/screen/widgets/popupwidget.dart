@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:zovo/shopowner/screen/presentation/add_items/add_menu_items/menu_items.dart';
+import 'package:zovo/shopowner/screen/presentation/add_items/add_menu_items/add_menu_items.dart';
 import 'package:zovo/shopowner/screen/presentation/add_items/add_offer_items/add_offerItems.dart';
-import 'package:zovo/shopowner/screen/presentation/add_items/todayoffersitem/todayoffers.dart';
+import 'package:zovo/shopowner/screen/presentation/add_items/todayoffersitem/add_todayoffers.dart';
 import 'package:zovo/theme.dart';
 
 void showPopup(BuildContext context) {

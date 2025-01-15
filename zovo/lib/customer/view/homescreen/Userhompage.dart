@@ -183,13 +183,20 @@ class HomePage extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('offers_today').snapshots(),                  builder: (context, snapshot) {                    if (snapshot.hasError) {
+                  stream: FirebaseFirestore.instance.collection('offers_today').snapshots(),                  
+                  builder: (context, snapshot) {                    
+                    if (snapshot.hasError) {
                       return Text('Something went wrong');
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return CircularProgressIndicator();
                     }
+
+                    var availableItems = snapshot.data!.docs.where((doc) {
+                      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                      return data['Available'] == true;
+                    }).toList();
 
                     return GridView.builder(
                       physics: NeverScrollableScrollPhysics(),
@@ -200,14 +207,31 @@ class HomePage extends StatelessWidget {
                         mainAxisSpacing: 10,
                         childAspectRatio: 1,
                       ),
-                      itemCount: snapshot.data!.docs.length,
+                      itemCount: availableItems.length,
                       itemBuilder: (context, index) {
-                        Map<String, dynamic> data = snapshot.data!.docs[index].data() as Map<String, dynamic>;
-                        return ProductTile(
-                          imageUrl: data['item_image'],
-                          productName: data['item_image'],
-                          price: data['item_image'],
-                          discount: data['item_image'],
+                        Map<String, dynamic> data = availableItems[index].data() as Map<String, dynamic>;
+                        final realprice = double.parse(data['item_price'].toString());
+                        final discount = double.parse(data['discount_price'].toString());
+                        final discountPercentage = ((realprice - discount) / realprice * 100).toStringAsFixed(0);
+                        return FutureBuilder<DocumentSnapshot>(
+                          future: FirebaseFirestore.instance.collection('shops').doc(data['email']).get(),
+                          builder: (context, shopSnapshot) {
+                            if (shopSnapshot.connectionState == ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            String shopName = '';
+                            if (shopSnapshot.hasData && shopSnapshot.data!.exists) {
+                              shopName = shopSnapshot.data!.get('shopName') ?? '';
+                            }
+                            return ProductTile(
+                              email: data['email'],
+                              imageUrl: data['item_image'],
+                              productName: data['item_name'],
+                              price: data['discount_price'],
+                              discount: discountPercentage,
+                              shopName: shopName,
+                            );
+                          },
                         );
                       },
                     );
@@ -253,14 +277,18 @@ class CategoryTile extends StatelessWidget {
 class ProductTile extends StatelessWidget {
   final String imageUrl;
   final String productName;
-  final String price;
+  final double price;
   final String discount;
+  final String email;
+  final String shopName;
 
   const ProductTile({
     required this.imageUrl,
     required this.productName,
     required this.price,
     required this.discount,
+    required this.email,
+    required this.shopName,
   });
 
   @override
@@ -301,10 +329,16 @@ class ProductTile extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '\$${price.toString()}  ${discount}% OFF',
+                    '${price.toString()}  ${discount}% OFF',
                     style: TextStyle(
                       color: AppColors.primaryText,
                       fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    shopName,
+                    style: TextStyle(
+                      color: AppColors.primaryText,
                     ),
                   ),
                 ],
