@@ -53,87 +53,129 @@ class HomePage extends StatelessWidget {
                         },
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFF71C165),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: EdgeInsets.all(8),
-                      child: Row(
-                        children: [
-                          Icon(Icons.shopping_cart, color: AppColors.secondaryCream),
-                          SizedBox(width: 4),
-                          Text(
-                            '3',
-                            style: GoogleFonts.poppins(color:AppColors.secondaryCream , fontSize: 16),
+                    TweenAnimationBuilder(
+                      tween: Tween<double>(begin: 2, end: 8),
+                      duration: Duration(seconds: 1),
+                      builder: (context, double value, child) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF71C165),
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: value,
+                                spreadRadius: value / 2,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                          padding: EdgeInsets.all(8),
+                          child: Row(
+                            children: [
+                              Icon(Icons.shopping_cart, color: AppColors.secondaryCream),
+                              SizedBox(width: 4),
+                              Text(
+                                '3',
+                                style: GoogleFonts.poppins(color:AppColors.secondaryCream , fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
                 SizedBox(height: 20),
            
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.secondaryCream,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    children: [
-                      Icon(Icons.search, color: AppColors.primaryText),
-                      SizedBox(width: 10),
-                      Text(
-                        'Search',
-                        style: GoogleFonts.poppins(color: AppColors.primaryText, fontSize: 16),
+                TweenAnimationBuilder(
+                  tween: Tween<double>(begin: 2, end: 8),
+                  duration: Duration(seconds: 1),
+                  builder: (context, double value, child) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.secondaryCream,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: value,
+                            spreadRadius: value / 2,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: AppColors.primaryText),
+                          SizedBox(width: 10),
+                          Text(
+                            'Search',
+                            style: GoogleFonts.poppins(color: AppColors.primaryText, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: 20),
-                Container(
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Color(0xFF71C165),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            image: DecorationImage(
-                              image: AssetImage('assets/images/banner.png'),
-                              fit: BoxFit.cover,
-                            ),
+                TweenAnimationBuilder(
+                  tween: Tween<double>(begin: 2, end: 8),
+                  duration: Duration(seconds: 1),
+                  builder: (context, double value, child) {
+                    return Container(
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Color(0xFF71C165),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: value,
+                            spreadRadius: value / 2,
+                            offset: Offset(0, 2),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  '',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),                
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/banner.png'),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      '',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),                
+                    );
+                  },
                 ),
                 SizedBox(height: 20),
                 Row(
@@ -190,12 +232,38 @@ class HomePage extends StatelessWidget {
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        height: 200,
+                      );
                     }
+
+                    snapshot.data!.docs.forEach((doc) async {
+                      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                      DateTime createdAt = (data['created_at'] as Timestamp).toDate();
+                      if (DateTime.now().difference(createdAt).inHours > 24) {
+                        await FirebaseFirestore.instance
+                            .collection('offers_today')
+                            .doc(doc.id)
+                            .update({'Available': false});
+                      }
+                    });
 
                     var availableItems = snapshot.data!.docs.where((doc) {
                       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                      return data['Available'] == true;
+                      DateTime createdAt = (data['created_at'] as Timestamp).toDate();
+                      return data['Available'] == true && 
+                             DateTime.now().difference(createdAt).inHours <= 24;
                     }).toList();
 
                     return GridView.builder(
@@ -217,7 +285,19 @@ class HomePage extends StatelessWidget {
                           future: FirebaseFirestore.instance.collection('shops').doc(data['email']).get(),
                           builder: (context, shopSnapshot) {
                             if (shopSnapshot.connectionState == ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.8),
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                              );
                             }
                             String shopName = '';
                             if (shopSnapshot.hasData && shopSnapshot.data!.exists) {
@@ -236,8 +316,7 @@ class HomePage extends StatelessWidget {
                       },
                     );
                   },
-                ),
-              ],
+                ),              ],
             ),
           ),
         ),
@@ -245,7 +324,6 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
 class CategoryTile extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -263,6 +341,13 @@ class CategoryTile extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.secondaryCream,
             borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
           padding: EdgeInsets.all(16),
           child: Icon(icon, size: 28),
@@ -297,6 +382,13 @@ class ProductTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

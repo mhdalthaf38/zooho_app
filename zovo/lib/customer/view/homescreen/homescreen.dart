@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zovo/customer/view/homescreen/Userhompage.dart';
+import 'package:zovo/customer/view/nearby/nearby_shop.dart';
 
 class UserHome extends StatefulWidget {
   const UserHome({super.key});
@@ -13,7 +14,7 @@ class _UserHomeState extends State<UserHome> {
 
   final List<Widget> _pages = [
      HomePage(),
-    const ProfileContent(),
+     RestaurantListPage(),
   ];
 
   @override
@@ -42,14 +43,3 @@ class _UserHomeState extends State<UserHome> {
   }
 }
 
-
-class ProfileContent extends StatelessWidget {
-  const ProfileContent({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Profile Page'),
-    );
-  }
-}
