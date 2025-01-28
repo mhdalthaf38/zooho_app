@@ -91,7 +91,7 @@ import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20detai
                             children: [
                               TextButton(
                                 onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Mapscreen(),),);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => directionscreen(storelatitude: restaurant['latitude'], storelongitude: restaurant['longitude'],storename:restaurant['shopName']),),);
                                 },
                                 child: Row(
                                   children: [Icon(Icons.directions), Text(' Directions')],

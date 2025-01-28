@@ -368,7 +368,7 @@ Future<String> _getAddressFromLatLng(LatLng position) async {
           ),
            if (_selectedLocation != null && _locationAddress != null)
             Positioned(
-              bottom: 80,
+              bottom: 40,
               left: 20,
               right: 20,
               child: Container(
@@ -408,8 +408,8 @@ Future<String> _getAddressFromLatLng(LatLng position) async {
                         ),
                         child: Text('Confirm Location'),))]))),
           Positioned(
-            bottom: 20,
-            left: 20,
+            top: 550,
+            right: 20,
             child: Column(children: [FloatingActionButton(
               backgroundColor: Colors.white,
               foregroundColor: Colors.indigo,

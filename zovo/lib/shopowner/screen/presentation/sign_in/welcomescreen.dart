@@ -96,7 +96,7 @@ class WelcomeScreen extends StatelessWidget {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                              
-                              side: BorderSide(color: AppColors.primaryText),
+                            
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
@@ -122,7 +122,7 @@ class WelcomeScreen extends StatelessWidget {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                              
-                              side: BorderSide(color: AppColors.primaryText),
+                              
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),

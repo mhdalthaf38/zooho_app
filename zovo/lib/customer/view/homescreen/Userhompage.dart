@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      backgroundColor: AppColors.primaryOrange,
+      backgroundColor: AppColors.secondaryCream,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(

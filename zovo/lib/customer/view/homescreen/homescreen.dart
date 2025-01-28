@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zovo/customer/view/homescreen/Userhompage.dart';
 import 'package:zovo/customer/view/nearby/nearby_shop.dart';
+import 'package:zovo/theme.dart';
 
 class UserHome extends StatefulWidget {
   const UserHome({super.key});
@@ -22,6 +23,7 @@ class _UserHomeState extends State<UserHome> {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppColors.secondaryCream,
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() {
@@ -30,12 +32,12 @@ class _UserHomeState extends State<UserHome> {
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: ImageIcon(AssetImage('assets/images/home.png')),
+            label: 'Offers'
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: ImageIcon(AssetImage('assets/images/nearby.png')),
+            label: 'Nearby Shops',
           ),
         ],
       ),
