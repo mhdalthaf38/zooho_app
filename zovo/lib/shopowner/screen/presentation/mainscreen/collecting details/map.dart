@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -27,7 +29,7 @@ class _MapscreenState extends State<Mapscreen> {
   bool _isDragging = false;
   List<dynamic> _searchResults = [];
   bool _isSearching = false;
-
+  String? _locationAddress;
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -48,18 +50,45 @@ class _MapscreenState extends State<Mapscreen> {
     }
     return await Geolocator.getCurrentPosition();
   }
-
+Future<String> _getAddressFromLatLng(LatLng position) async {
+    final url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}';
+    final response = await http.get(Uri.parse(url));
+    final data = json.decode(response.body);
+    return data['display_name'];
+  }
   void _showcurrentlocation() async {
     try {
       Position position = await _determinePosition();
       LatLng currentlatlang = LatLng(position.latitude, position.longitude);
+       String address = await _getAddressFromLatLng(currentlatlang);
       setState(() {
         _mapController.move(currentlatlang, 19.0);
         _myposition = currentlatlang;
+        _locationAddress = address;
       });
     } catch (e) {
       print(e);
     }
+  }
+
+ Future<void> _saveLocationToFirebase(LatLng location) async {
+    try {
+         final email = FirebaseAuth.instance.currentUser?.email;
+      await FirebaseFirestore.instance.collection('shops').doc(email).update({
+        'latitude': location.latitude,
+        'longitude': location.longitude,
+        'address': _locationAddress,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Location saved successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save location: $e')),
+      );
+    }
+  
   }
 
   void _addmarker(LatLng position, String title, String description) {
@@ -220,9 +249,27 @@ class _MapscreenState extends State<Mapscreen> {
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
-                onTap: (tapPosition, LatLng) {
-                  _selectedLocation = LatLng;
+                onTap: (tapPosition, point)async {
+                  _selectedLocation = point;
                   _draggedPosition = _selectedLocation;
+                   String address = await _getAddressFromLatLng(point);
+                  setState(() {
+                    _selectedLocation = point;
+                    _draggedPosition = point;
+                    _locationAddress = address;
+                    _markers = [
+                      Marker(
+                        point: point,
+                        width: 80,
+                        height: 80,
+                        child: Icon(
+                          Icons.location_on,
+                          color: Colors.indigo,
+                          size: 40,
+                        ),
+                      ),
+                    ];
+                  });
                 },
                 initialZoom: 15.0),
             children: [
@@ -319,35 +366,47 @@ class _MapscreenState extends State<Mapscreen> {
               ],
             ),
           ),
-          _isDragging == false
-              ? Positioned(
-                  bottom: 200,
-                  left: 20,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.indigo,
-                    foregroundColor: Colors.white,
-                    onPressed: () {
-                      setState(() {
-                        _isDragging = true;
-                      });
-                    },
-                    child: Icon(Icons.add_location),
-                  ),
-                )
-              : Positioned(
-                  bottom: 200,
-                  left: 20,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.indigo,
-                    foregroundColor: Colors.white,
-                    onPressed: () {
-                      setState(() {
-                        _isDragging = true;
-                      });
-                    },
-                    child: Icon(Icons.wrong_location),
-                  ),
+           if (_selectedLocation != null && _locationAddress != null)
+            Positioned(
+              bottom: 80,
+              left: 20,
+              right: 20,
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: Offset(0, 5),
+                    ),
+                  ],
                 ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Selected Location',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(_locationAddress!),
+                    SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => _saveLocationToFirebase(_selectedLocation!),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryOrange,
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: Text('Confirm Location'),))]))),
           Positioned(
             bottom: 20,
             left: 20,
