@@ -45,45 +45,8 @@ class HomePage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Builder(
-                      builder: (context) => IconButton(
-                        icon: Icon(Icons.menu, size: 28,color: AppColors.secondaryCream,),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                      ),
-                    ),
-                    TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 2, end: 8),
-                      duration: Duration(seconds: 1),
-                      builder: (context, double value, child) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFF71C165),
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: value,
-                                spreadRadius: value / 2,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          padding: EdgeInsets.all(8),
-                          child: Row(
-                            children: [
-                              Icon(Icons.shopping_cart, color: AppColors.secondaryCream),
-                              SizedBox(width: 4),
-                              Text(
-                                '3',
-                                style: GoogleFonts.poppins(color:AppColors.secondaryCream , fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                  
+                  
                   ],
                 ),
                 SizedBox(height: 20),

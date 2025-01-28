@@ -305,6 +305,7 @@ class _DetailspageState extends State<Detailspage> {
                                 'area': _areaController.text,
                                 'phoneNumber': _phonenumberController.text,
                                 'shopDescription': _shopDescriptionController.text,
+                                'email': email,
                               });
                               Navigator.push(
                                 context,

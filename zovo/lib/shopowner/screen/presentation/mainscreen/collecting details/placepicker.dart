@@ -179,27 +179,7 @@ TileLayer(urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",)
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                  ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColors.primaryOrange,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(15),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: screenHeight * 0.02,
-                                          ),
-                                      ),
-                                      onPressed: _isLoading ? null : _getCurrentLocation,
-                                      child: _isLoading 
-                                          ? CircularProgressIndicator(color: AppColors.secondaryCream)
-                                          : Text('Current Location',
-                                              style: GoogleFonts.poppins(
-                                                  fontWeight: FontWeight.w900,
-                                                  color: AppColors.secondaryCream,
-                                                  fontSize: screenWidth * 0.045,
-                                              ),
-                                          ),
-                                  ),
+                                  
                                   SizedBox(height: screenHeight * 0.02),
                                   ElevatedButton(
                                       style: ElevatedButton.styleFrom(
@@ -223,28 +203,7 @@ TileLayer(urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",)
                                       ),
                                   ),
                                   SizedBox(height: screenHeight * 0.02),
-                                  if (_locationSaved)
-                                      ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: AppColors.primaryOrange,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(15),
-                                              ),
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: screenHeight * 0.02,
-                                              ),
-                                          ),
-                                          onPressed: () {
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => imageDetailspage()));
-                                          },
-                                          child: Text('Next',
-                                              style: GoogleFonts.poppins(
-                                                  fontWeight: FontWeight.w900,
-                                                  color: AppColors.secondaryCream,
-                                                  fontSize: screenWidth * 0.045,
-                                              ),
-                                          ),
-                                      ),
+                             
                               ],
                           ),
                       ),

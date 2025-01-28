@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
                   else if(!shopData.containsKey('shopImages')){
                     return imageDetailspage();
                   }else{
-                    return PlacePicker();
+                    return MainPage();
                   }       
                 }else {
                  return  StreamBuilder<DocumentSnapshot?>(
@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
                 if (snapshot.hasData && snapshot.data != null && snapshot.data!.data() != null) {
                   Map<String, dynamic> shopData = snapshot.data!.data() as Map<String, dynamic>;
                   if(shopData.containsKey('email') || shopData['email'] != null || shopData['email'] != ''){
-                    return PlacePicker();
+                    return UserHome();
                   }else{
                     return WelcomeScreen();
                   }
