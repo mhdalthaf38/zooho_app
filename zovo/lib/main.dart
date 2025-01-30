@@ -6,7 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:zovo/customer/view/homescreen/Userhompage.dart';
+import 'package:zovo/customer/view/offers/Userhompage.dart';
 import 'package:zovo/customer/view/homescreen/homescreen.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/collectingshopimages.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/detailspage.dart';

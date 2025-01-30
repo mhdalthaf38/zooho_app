@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/homescreen/home.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/preorderpage/Preorderpage.dart';
@@ -24,6 +25,7 @@ class _MainPageState extends State<MainPage> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return WillPopScope(
+      
       onWillPop: () async {
         return await showDialog(
           context: context,
@@ -36,7 +38,7 @@ class _MainPageState extends State<MainPage> {
                 child: Text('No'),
               ),
               TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () => SystemNavigator.pop(),
                 child: Text('Yes'),
               ),
             ],

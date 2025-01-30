@@ -306,6 +306,7 @@ class _DetailspageState extends State<Detailspage> {
                                 'phoneNumber': _phonenumberController.text,
                                 'shopDescription': _shopDescriptionController.text,
                                 'email': email,
+                                'shopstatus':true
                               });
                               Navigator.push(
                                 context,

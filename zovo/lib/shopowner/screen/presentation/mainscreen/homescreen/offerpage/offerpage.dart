@@ -64,7 +64,28 @@ class Offerpage extends StatelessWidget {
                   final menuavailable = itemData['Available'];
                   final available = menuavailable ? data['Available'] : menuavailable;          
                   final email = user.email;
-
+                 
+                  final endtime =(data['created_at'] as Timestamp).toDate();
+                  final datenow = DateTime.now();
+                
+                  if (datenow.isAfter(endtime)) {
+                    
+                  String remainingtime ="${endtime.day}-${endtime.month}-${endtime.year}";
+                   return CustomOFFERCard(
+                    itemId: data['item_id'],
+                    id: idforavailable ,
+                    collectionName: 'today_offers',
+                    subcollectionName: 'offers_today',
+                    email: email!,
+                    imageUrl: itemData['imageUrl'],
+                    title: itemData['name'],
+                    distance: '6.2',
+                    offer: '$discountPercentage%OFF',
+                    remainingtime: remainingtime.toString(),
+                    available: available ? 'Available' : 'Unavailable',
+                    rate: discountprice.toString()
+                  );
+                  }
                   return CustomOFFERCard(
                       subcollectionName: 'items_offers',
                     itemId: data['item_id'],
@@ -75,7 +96,7 @@ class Offerpage extends StatelessWidget {
                     title: itemData['name'],
                     distance: '6.2',
                     offer: '$discountPercentage%OFF',
-                    cuisine: '',
+                    remainingtime: 'Expired',
                     available: available ? 'Available' : 'Unavailable',
                     rate: data['price']?.toString() ?? ''
                   );

@@ -65,7 +65,26 @@ class TodayoffersScreen extends StatelessWidget {
                   final discountPercentage = ((realprice - discountprice) / realprice * 100).toStringAsFixed(0);
                   final menuavailable = itemData['Available'];
                   final available = menuavailable ? data['Available'] : menuavailable;   
-
+                  final time = data['created_at']?? Timestamp.now();
+                  final datenow = DateTime.now();
+                  final hours = datenow.difference(time.toDate()).inHours;
+                  if (hours < 24) {
+                  var remainingtime = 24 - hours;
+                   return CustomOFFERCard(
+                    itemId: data['item_id'],
+                    id: idforavailable ,
+                    collectionName: 'today_offers',
+                    subcollectionName: 'offers_today',
+                    email: email!,
+                    imageUrl: itemData['imageUrl'],
+                    title: itemData['name'],
+                    distance: '6.2',
+                    offer: '$discountPercentage%OFF',
+                    remainingtime: '${remainingtime.toString()} Hours ',
+                    available: available ? 'Available' : 'Unavailable',
+                    rate: discountprice.toString()
+                  );
+                  }
                   return CustomOFFERCard(
                     itemId: data['item_id'],
                     id: idforavailable ,
@@ -76,7 +95,7 @@ class TodayoffersScreen extends StatelessWidget {
                     title: itemData['name'],
                     distance: '6.2',
                     offer: '$discountPercentage%OFF',
-                    cuisine: '',
+                    remainingtime: 'Expired',
                     available: available ? 'Available' : 'Unavailable',
                     rate: discountprice.toString()
                   );

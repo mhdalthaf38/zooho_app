@@ -8,14 +8,14 @@ class CustomOFFERCard extends StatelessWidget {
   final String title;
   final String rate;
   final String available;
-  final String cuisine;
+  final String? remainingtime;
   final String distance;
   final String? offer;
   final String email;
   final String collectionName;
   final String id;
-final String itemId;
-final String subcollectionName;
+  final String itemId;
+  final String subcollectionName;
   const CustomOFFERCard({
     super.key,
     required this.id,
@@ -23,10 +23,9 @@ final String subcollectionName;
     required this.imageUrl,
     required this.title,
     required this.available,
-    required this.cuisine,
+     this.remainingtime,
     required this.distance,
     required this.rate,
-
     required this.email,
     required this.itemId,
     required this.subcollectionName,
@@ -53,7 +52,9 @@ final String subcollectionName;
             if (difference.inHours >= 24) {
               await updateAvailability(false);
             }
-          } else if (collectionName == 'offers' && data['start_date'] != null && data['end_date'] != null) {
+          } else if (collectionName == 'offers' &&
+              data['start_date'] != null &&
+              data['end_date'] != null) {
             final startDate = (data['start_date'] as Timestamp).toDate();
             final endDate = (data['end_date'] as Timestamp).toDate();
             final now = DateTime.now();
@@ -67,7 +68,9 @@ final String subcollectionName;
     } catch (e) {
       print('Error checking availability: $e');
     }
-   }  Future<void> updateAvailability(bool isAvailable) async {
+  }
+
+  Future<void> updateAvailability(bool isAvailable) async {
     try {
       await FirebaseFirestore.instance
           .collection(collectionName)
@@ -75,7 +78,7 @@ final String subcollectionName;
           .collection('items')
           .doc(id)
           .update({'Available': isAvailable});
-           await FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection(subcollectionName)
           .doc('$email$itemId')
           .update({'Available': isAvailable});
@@ -92,15 +95,16 @@ final String subcollectionName;
           .collection('items')
           .doc(id)
           .delete();
-           await FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection(subcollectionName)
-          .doc('$email$itemId').delete();
+          .doc('$email$itemId')
+          .delete();
     } catch (e) {
       print('Error deleting item: $e');
     }
   }
 
-Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
+  Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
     try {
       if (collectionName == 'today_offers' && isAvailable) {
         await FirebaseFirestore.instance
@@ -112,9 +116,10 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
           'Available': isAvailable,
           'created_at': Timestamp.now(),
         });
-         await FirebaseFirestore.instance
-          .collection(subcollectionName)
-          .doc('$email$itemId').update({
+        await FirebaseFirestore.instance
+            .collection(subcollectionName)
+            .doc('$email$itemId')
+            .update({
           'Available': isAvailable,
           'created_at': Timestamp.now(),
         });
@@ -124,7 +129,7 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
           firstDate: DateTime.now(),
           lastDate: DateTime.now().add(Duration(days: 365)),
         );
-        
+
         if (dateRange != null) {
           await FirebaseFirestore.instance
               .collection(collectionName)
@@ -136,9 +141,10 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
             'start_date': Timestamp.fromDate(dateRange.start),
             'end_date': Timestamp.fromDate(dateRange.end),
           });
-           await FirebaseFirestore.instance
-          .collection(subcollectionName)
-          .doc('$email$itemId').update({
+          await FirebaseFirestore.instance
+              .collection(subcollectionName)
+              .doc('$email$itemId')
+              .update({
             'Available': isAvailable,
             'start_date': Timestamp.fromDate(dateRange.start),
             'end_date': Timestamp.fromDate(dateRange.end),
@@ -151,7 +157,6 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
             .collection('items')
             .doc(id)
             .update({'Available': isAvailable});
-            
       }
     } catch (e) {
       print('Error updating availability: $e');
@@ -185,9 +190,10 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
                       .collection('items')
                       .doc(id)
                       .update({'price': priceController.text});
-                       await FirebaseFirestore.instance
-          .collection(subcollectionName)
-          .doc('$email$itemId').update({'discount_price': priceController.text});
+                  await FirebaseFirestore.instance
+                      .collection(subcollectionName)
+                      .doc('$email$itemId')
+                      .update({'discount_price': priceController.text});
                   Navigator.pop(context);
                 } catch (e) {
                   print('Error updating price: $e');
@@ -203,7 +209,7 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
   @override
   Widget build(BuildContext context) {
     checkAndUpdateAvailability();
-    
+
     // Screen dimensions
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -227,7 +233,8 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
             decoration: BoxDecoration(
               color: AppColors.primaryOrange,
               image: DecorationImage(
-                image: NetworkImage(imageUrl),                fit: BoxFit.cover,
+                image: NetworkImage(imageUrl),
+                fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(25),
             ),
@@ -249,11 +256,19 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
                       children: [
                         Text(
                           'ITEMS',
-                          style: GoogleFonts.poppins(color: Colors.white, fontSize: imageSize * 0.12, fontWeight: FontWeight.w900, letterSpacing: 0.01),
+                          style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: imageSize * 0.12,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.01),
                         ),
                         Text(
                           'AT ₹$rate',
-                          style: GoogleFonts.poppins(color: Colors.white, fontSize: imageSize * 0.14, fontWeight: FontWeight.w900, letterSpacing: 0.01),
+                          style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: imageSize * 0.14,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.01),
                         ),
                       ],
                     ),
@@ -290,7 +305,7 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
                       ),
                       onSelected: (value) {
                         if (value == 'Available') {
-                          updatetoAvailable(true,context);
+                          updatetoAvailable(true, context);
                         } else if (value == 'Not Available') {
                           updateAvailability(false);
                         } else if (value == 'Delete') {
@@ -302,29 +317,55 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
                       itemBuilder: (BuildContext context) => [
                         PopupMenuItem<String>(
                           value: 'Available',
-                          child: Text('Available',style: GoogleFonts.poppins(color: AppColors.accentGreen, fontSize: fontSize * 1, fontWeight: FontWeight.bold),),
+                          child: Text(
+                            'Available',
+                            style: GoogleFonts.poppins(
+                                color: AppColors.accentGreen,
+                                fontSize: fontSize * 1,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         PopupMenuItem<String>(
                           value: 'Not Available',
-                          child: Text('Not Available',style: GoogleFonts.poppins(color: AppColors.accentRed, fontSize: fontSize * 1, fontWeight: FontWeight.bold),),
+                          child: Text(
+                            'Not Available',
+                            style: GoogleFonts.poppins(
+                                color: AppColors.accentRed,
+                                fontSize: fontSize * 1,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         PopupMenuItem<String>(
                           value: 'Edit',
-                          child: Text('Edit Price',style: GoogleFonts.poppins(color: AppColors.primaryOrange, fontSize: fontSize * 1, fontWeight: FontWeight.bold),),
+                          child: Text(
+                            'Edit Price',
+                            style: GoogleFonts.poppins(
+                                color: AppColors.primaryOrange,
+                                fontSize: fontSize * 1,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         PopupMenuItem<String>(
                           value: 'Delete',
-                          child: Text('Delete',style: GoogleFonts.poppins(color: Colors.red, fontSize: fontSize * 1, fontWeight: FontWeight.bold),),
+                          child: Text(
+                            'Delete',
+                            style: GoogleFonts.poppins(
+                                color: Colors.red,
+                                fontSize: fontSize * 1,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     ),
                   ],
                 ),
-               
                 Text(
                   available,
                   style: GoogleFonts.poppins(
-                    color: available == 'Available' ? AppColors.accentGreen : AppColors.accentRed,fontWeight: FontWeight.bold,
+                    color: available == 'Available'
+                        ? AppColors.accentGreen
+                        : AppColors.accentRed,
+                    fontWeight: FontWeight.bold,
                     fontSize: fontSize * 1,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -338,11 +379,27 @@ Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                 Text('Ends in $cuisine Hr',style: GoogleFonts.poppins(color: AppColors.secondaryText, fontSize: fontSize * 0.8, fontWeight: FontWeight.bold),),
+                remainingtime == null? SizedBox.shrink() : 
+                remainingtime == "Expired"
+                    ? Text(
+                        '$remainingtime',
+                        style: GoogleFonts.poppins(
+                            color: AppColors.secondaryText,
+                            fontSize: fontSize * 0.8,
+                            fontWeight: FontWeight.bold),
+                      )
+                    : Text(
+                        'Ends in $remainingtime',
+                        style: GoogleFonts.poppins(
+                            color: AppColors.secondaryText,
+                            fontSize: fontSize * 0.8,
+                            fontWeight: FontWeight.bold),
+                      ),
               ],
             ),
           ),
         ],
       ),
     );
-  }}
+  }
+}

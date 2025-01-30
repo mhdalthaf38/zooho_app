@@ -44,7 +44,7 @@ class Menupage extends StatelessWidget {
                 title: item['name'] ?? 'American crispy chicken burger',
                 distance: item['distance'] ?? '6.2',
          
-                cuisine: item['cuisine'] ?? '',
+              
                 available: item['Available'] ? 'Available' : 'Unavailable',                rate: item['price'].toString());
             },
           );

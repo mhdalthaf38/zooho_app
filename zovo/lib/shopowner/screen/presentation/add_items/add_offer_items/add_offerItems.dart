@@ -21,6 +21,9 @@ class _AddOfferItemsState extends State<AddOfferItems> {
   String? itemError;
   String? priceError;
   String? dateError;
+   double? currentPrice;
+  String? selectedItemImage;
+  String? selectedItemName;
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +78,24 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                                 fontWeight: FontWeight.bold,
                               ),),
                             items: menuItems,
-                            onChanged: (value) {
+                            onChanged: (value) async{
                               setState(() {
                                 selectedItem = value;
                                 itemError = null;
                               });
+                               if (value != null) {
+                                final doc = await FirebaseFirestore.instance
+                                    .collection('menu_items')
+                                    .doc(email)
+                                    .collection('items')
+                                    .doc(value)
+                                    .get();
+                                setState(() {
+                                  currentPrice = doc['price'].toDouble();
+                                  selectedItemImage = doc['imageUrl'];
+                                  selectedItemName = doc['name'];
+                                });
+                              }
                             },
                             icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryOrange),
                             isExpanded: true,
@@ -96,6 +112,35 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                               child: Text(
                                 itemError!,
                                 style: TextStyle(color: Colors.red, fontSize: 12),
+                              ),
+                            ),
+                            if (selectedItemImage != null)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                      image: NetworkImage(selectedItemImage!),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (currentPrice != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                'Current Price: ₹${currentPrice!.toStringAsFixed(2)}',
+                                style: GoogleFonts.poppins(
+                                  color: AppColors.primaryOrange,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                         ],
