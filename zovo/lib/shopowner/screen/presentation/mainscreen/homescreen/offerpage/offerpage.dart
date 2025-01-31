@@ -65,16 +65,16 @@ class Offerpage extends StatelessWidget {
                   final available = menuavailable ? data['Available'] : menuavailable;          
                   final email = user.email;
                  
-                  final endtime =(data['created_at'] as Timestamp).toDate();
+                  final endtime =(data['end_date'] as Timestamp).toDate();
                   final datenow = DateTime.now();
                 
-                  if (datenow.isAfter(endtime)) {
+                  if (datenow.isBefore(endtime)) {
                     
                   String remainingtime ="${endtime.day}-${endtime.month}-${endtime.year}";
                    return CustomOFFERCard(
                     itemId: data['item_id'],
                     id: idforavailable ,
-                    collectionName: 'today_offers',
+                    collectionName: 'offers',
                     subcollectionName: 'offers_today',
                     email: email!,
                     imageUrl: itemData['imageUrl'],

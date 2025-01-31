@@ -1,10 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:zovo/theme.dart';
-import 'package:zovo/customer/view/offers/todayOffers/alltodayoffers.dart';
+import 'package:zovo/customer/view/alloffers/todayOffers/alltodayoffers.dart';
 import 'package:zovo/customer/view/widgets/offercard.dart';
 import 'package:zovo/customer/view/widgets/todayoffercard.dart';
+
+import 'package:zovo/theme.dart';
+
+
 
 class HomePage extends StatelessWidget {
   @override
@@ -20,7 +24,7 @@ class HomePage extends StatelessWidget {
             automaticallyImplyLeading: false,
          
             expandedHeight:
-                screenHeight * 0.36, // Expands up to 35% of screen height
+                screenHeight * 0.36, // Expands up to 36% of screen height
             // Disappears when scrolling up
             pinned: true, // Stays pinned when collapsed
             flexibleSpace: FlexibleSpaceBar(
@@ -190,7 +194,7 @@ class HomePage extends StatelessWidget {
                         DateTime createdAt =
                             (data['created_at'] as Timestamp).toDate();
                         return data['Available'] == true &&
-                            DateTime.now().difference(createdAt).inHours <= 24;
+                            DateTime.now().difference(createdAt).inHours <= 24 && data['Offertype'] == 'today_offers';
                       }).toList();
 
                       return GridView.builder(
@@ -199,8 +203,8 @@ class HomePage extends StatelessWidget {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 20,
-                          mainAxisSpacing: 20,
-                          childAspectRatio: 0.65,
+                          mainAxisSpacing: 0,
+                          childAspectRatio: 0.7,
                         ),
                         itemCount: availableItems.length,
                         itemBuilder: (context, index) {
@@ -219,15 +223,101 @@ class HomePage extends StatelessWidget {
                               }
                               String shopName =
                                   shopSnapshot.data?.get('shopName') ?? '';
-                              return RestaurantCard(
+                                      final discountPercentage = ((data['item_price'] - data['discount_price']) / data['item_price'] * 100).toStringAsFixed(0);
+                                      final time = data['created_at']?? Timestamp.now();
+                  final datenow = DateTime.now();
+                  final hours = datenow.difference(time.toDate()).inHours;
+                  if (hours < 24) {
+                  var remainingtime = 24 - hours;
+                              return todayoffercard(
+                                discountoffer:discountPercentage,
                                 imageUrl: data['item_image'],
                                 restaurantName: data['item_name'],
                                 priceInfo: '₹${data['item_price']}',
                                 rating: '4.5',
                                 deliveryTime: '30 min',
                                 cuisines: shopName,
-                                isAd: true,
+                                remainingtime: remainingtime.toString(),
                               );
+                            }
+                              return SizedBox.shrink();
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Grab the Offers Before its end',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                     
+                    ],
+                  ),
+                 StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('offers_today')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Something went wrong');
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      var availableItems = snapshot.data!.docs.where((doc) {
+                        Map<String, dynamic> data =
+                            doc.data() as Map<String, dynamic>;
+                        DateTime createdAt =
+                            (data['created_at'] as Timestamp).toDate();
+                        return data['Available'] == true &&
+                            DateTime.now().difference(createdAt).inHours <= 24 && data['Offertype'] == 'offers';
+                      }).toList();
+
+                      return GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 1,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 0,
+                          childAspectRatio: 1.9,
+                        ),
+                        itemCount: availableItems.length,
+                        itemBuilder: (context, index) {
+                          Map<String, dynamic> data = availableItems[index]
+                              .data() as Map<String, dynamic>;
+                          return FutureBuilder<DocumentSnapshot>(
+                            future: FirebaseFirestore.instance
+                                .collection('shops')
+                                .doc(data['email'])
+                                .get(),
+                            builder: (context, shopSnapshot) {
+                              if (shopSnapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
+                              String shoplocation = shopSnapshot.data?.get('location') ?? '';
+                              String shopName =
+                                  shopSnapshot.data?.get('shopName') ?? '';
+                                   final endtime =(data['end_date'] as Timestamp).toDate();
+                  final datenow = DateTime.now();
+                  final discountPercentage = ((data['item_price'] - data['discount_price']) / data['item_price'] * 100).toStringAsFixed(0);
+                  if (datenow.isBefore(endtime)) {
+                      String remainingtime ="${endtime.day}-${endtime.month}-${endtime.year}";
+
+                                return Offercard(description: data['description'],
+                                  location: shoplocation,
+                                  offerprice:discountPercentage,
+                                  available: data['Available'] == true ? 'Available':'Not AVailable', remainingtime: remainingtime, imageUrl: data['item_image'], itemname: data['item_name'], price: data['discount_price'].toString(), shopName: shopName);
+                  }
+                              return SizedBox.shrink();
                             },
                           );
                         },

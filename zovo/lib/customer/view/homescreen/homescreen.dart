@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:zovo/customer/view/offers/Userhompage.dart';
+import 'package:zovo/customer/view/alloffers/Userhompage.dart';
 import 'package:zovo/customer/view/nearby/nearby_shop.dart';
 import 'package:zovo/theme.dart';
 

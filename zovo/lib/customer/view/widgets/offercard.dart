@@ -1,187 +1,152 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:zovo/theme.dart';
 
-class RestaurantCard extends StatelessWidget {
+class Offercard extends StatelessWidget {
+  final String available;
+  final String remainingtime;
   final String imageUrl;
-  final String restaurantName;
-  final String priceInfo;
-  final String rating;
-  final String deliveryTime;
-  final String cuisines;
-  final bool isAd;
-
-  const RestaurantCard({
-    Key? key,
-    required this.imageUrl,
-    required this.restaurantName,
-    required this.priceInfo,
-    required this.rating,
-    required this.deliveryTime,
-    required this.cuisines,
-    this.isAd = false,
-  }) : super(key: key);
-
+  final String itemname;
+  final String price;
+  final String shopName;
+  final String offerprice;
+  final String location;
+  final String description;
+  const Offercard({
+    super.key,
+    required this.available, required this.remainingtime, required this.imageUrl, required this.itemname, required this.price, required this.shopName, required this.offerprice, required this.location, required this.description,
+  });
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenheight = MediaQuery.of(context).size.height;
+      final screenwidth = MediaQuery.of(context).size.width;
     return Container(
-      width: 180,
+    
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
         color: AppColors.secondaryCream,
-       
+        borderRadius: BorderRadius.circular(16),
+      
       ),
-      child: Column(
+     
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration( boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
+          // Image Section
+          Container(
+            decoration: BoxDecoration(  boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 8, spreadRadius: 2),
         ],),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(screenWidth * 0.05), bottom: Radius.circular(screenWidth * 0.05)),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Stack(
+                children: [
+                  Image.network(
+                    imageUrl,
+                    width: screenwidth * 0.40,
+                    height: screenheight * 0.195,
+                    fit: BoxFit.cover,
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Icon(Icons.favorite_border, color: Colors.white),
+                  ),
+                  Positioned(
+                    bottom: 8,
+                    left: 8,
                     child: Container(
-                      height: screenheight * 0.195,
-                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(imageUrl),
-                          fit: BoxFit.cover,
-                        ),
+                       
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.6), // Dark bottom
-                              Colors.black.withOpacity(0.3),
-                              Colors.transparent, // Fade out
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ),
-              // Free Delivery Tag
-              Positioned(
-                top: 8,
-                left: 8,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.redAccent,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Today",
-                        style: TextStyle(
+                      child: Text(
+                        'Item\n  At ₹$price',
+                        style: GoogleFonts.poppins(
                           color: Colors.white,
+                          fontSize:15 ,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
                         ),
                       ),
-                      SizedBox(width: 4),
-                      Text(
-                        "Offers",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Favorite (Heart) Icon
-              Positioned(
-                top: 8,
-                right: 8,
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 14,
-                  child: Icon(Icons.favorite_border, color: Colors.black, size: 16),
-                ),
-              ),
-              // Price Info
-              Positioned(
-                bottom: 8,
-                left: 8,
-                child: Text(
-                  "ITEMS\nAT $priceInfo",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 3,
-                        color: Colors.black38,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Ad Tag (if applicable)
-              if (isAd)
-                Positioned(
-                  bottom: 8,
-                  right: 8,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      "AD",
-                      style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
-                ),
-            ],
+                ],
+              ),
+            ),
           ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
+          SizedBox(width: 12),
+          // Restaurant Details
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 4),
+                
                 Text(
-                  cuisines.toUpperCase(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: AppColors.secondaryText, fontSize: 12),
+                  '$shopName',
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  restaurantName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                ),
-                SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.star, color: Colors.green, size: 14),
+                    Icon(Icons.star, color: Colors.green, size: 16),
                     SizedBox(width: 4),
-                    Text(
-                      "$rating • $deliveryTime",
-                      style: TextStyle(fontSize: 12),
-                    ),
+                    Text('4.0 (20K+)', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.bold)),
+                    Text(' • 20-25 mins', style: GoogleFonts.poppins(fontSize: 12, color: Colors.black54)),
                   ],
                 ),
+                Text(
+                  '$description',
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.black54),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                  Text(
+                  available,
+                  style: GoogleFonts.poppins(
+                    color: available == 'Available'
+                        ? AppColors.accentGreen
+                        : AppColors.accentRed,
+                    fontWeight: FontWeight.bold,
+                    fontSize: screenwidth * 0.03,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                        'Ends in $remainingtime ',
+                        style: GoogleFonts.poppins(
+                            color: AppColors.secondaryText,
+                            fontSize: screenheight * 0.02,
+                            fontWeight: FontWeight.bold),
+                      ),
+                Text(
+                  '$location • 0.7 km',
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.black54),
+                ),
+                SizedBox(height: 20),
                 
+                // Discount Offer Section
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFFE5E5),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  child: Row(
+                    children: [
+                      Text(
+                        'EXTRA $offerprice% OFF',
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      
+                      Spacer(),
+                     
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

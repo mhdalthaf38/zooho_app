@@ -24,7 +24,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
    double? currentPrice;
   String? selectedItemImage;
   String? selectedItemName;
-
+  String? description;
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -94,6 +94,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                                   currentPrice = doc['price'].toDouble();
                                   selectedItemImage = doc['imageUrl'];
                                   selectedItemName = doc['name'];
+                                  description = doc['description'];
                                 });
                               }
                             },
@@ -286,7 +287,20 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                     'created_at': FieldValue.serverTimestamp(),
                     'Available': true,
                   });
-                  
+                  await _firestore.collection('offers_today').doc('$email+$selectedItem').set({
+                     'Offertype':'offers',
+                    'email': email,
+                    'item_id': selectedItem,
+                    'item_name': selectedItemName,
+                    'item_image': selectedItemImage,
+                    'item_price': currentPrice,
+                    'discount_price': double.parse(_discountPriceController.text),
+                    'start_time': Timestamp.fromDate(startDate!),
+                    'end_date': Timestamp.fromDate(endDate!),
+                    'created_at': FieldValue.serverTimestamp(),
+                    'Available': true,
+                    'description':description,
+                  });
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Item added to offers')),
                   );

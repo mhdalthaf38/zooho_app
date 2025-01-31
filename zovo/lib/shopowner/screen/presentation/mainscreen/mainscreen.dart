@@ -49,32 +49,32 @@ class _MainPageState extends State<MainPage> {
         extendBody: true,
         body: [
           HomeScreen(),
-          MyOrdersScreen(),
+          ProfilePage()
+          // MyOrdersScreen(),
 
           // Add other screens if needed
         ][_currentIndex],
 
         // Conditionally render the FloatingActionButton
        floatingActionButton: 
-       Padding(
-          padding: EdgeInsets.all(screenWidth * 0.025),
-          child: SizedBox(
-            child: FloatingActionButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-              backgroundColor: AppColors.primaryOrange,
-              onPressed: () {
-                showPopup(context); // Call the function to show the popup
-              },
-              child: Image.asset(
-                'assets/images/add.png',
-                width: screenWidth * 0.05,
-                color: AppColors.secondaryCream,
-              ),
-            ),
-          ),
-        ),
+       SizedBox(
+        width: screenWidth * 0.13,
+        height: screenWidth * 0.13,
+         child: FloatingActionButton(
+           shape: RoundedRectangleBorder(
+             borderRadius: BorderRadius.circular(50),
+           ),
+           backgroundColor: AppColors.primaryOrange,
+           onPressed: () {
+             showPopup(context); // Call the function to show the popup
+           },
+           child: Image.asset(
+             'assets/images/add.png',
+             width: screenWidth * 0.045,
+             color: AppColors.secondaryCream,
+           ),
+         ),
+       ),
      
 
 
@@ -82,7 +82,7 @@ class _MainPageState extends State<MainPage> {
 
         // Conditionally render the BottomAppBar
         bottomNavigationBar: BottomAppBar(
-              height: screenHeight * 0.08,
+              height: screenHeight * 0.06,
                 color: AppColors.primaryOrange,
                 shape: const CircularNotchedRectangle(),
                 child: Row(
@@ -95,12 +95,12 @@ class _MainPageState extends State<MainPage> {
                         });
                       },
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Image.asset(
                             'assets/images/home.png',
-                            width: screenWidth * 0.06,
-                            height: screenHeight * 0.04,
+                            width: screenWidth * 0.05,
+                            height: screenHeight * 0.03,
                             color: AppColors.secondaryCream,
                           ),
                         ],
@@ -114,12 +114,12 @@ class _MainPageState extends State<MainPage> {
                         });
                       },
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Image.asset(
                             'assets/images/user.png',
-                            width: screenWidth * 0.06,
-                            height: screenHeight * 0.04,
+                            width: screenWidth * 0.05,
+                            height: screenHeight * 0.03,
                             color: AppColors.secondaryCream,
                           ),
                         ],

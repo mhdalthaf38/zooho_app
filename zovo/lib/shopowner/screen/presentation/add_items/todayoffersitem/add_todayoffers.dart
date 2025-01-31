@@ -16,6 +16,7 @@ class _TodayoffersState extends State<Todayoffers> {
   double? currentPrice;
   String? selectedItemImage;
   String? selectedItemName;
+  String? description;
   final TextEditingController _discountPriceController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   DateTime? startDate;
@@ -92,6 +93,7 @@ class _TodayoffersState extends State<Todayoffers> {
                                   currentPrice = doc['price'].toDouble();
                                   selectedItemImage = doc['imageUrl'];
                                   selectedItemName = doc['name'];
+                                  description = doc['description'];
                                 });
                               }
                             },
@@ -232,6 +234,7 @@ class _TodayoffersState extends State<Todayoffers> {
 
                   // Add to offers_today collection
                   await _firestore.collection('offers_today').doc('$email$selectedItem').set({
+                    'Offertype':'today_offers',
                     'email': email,
                     'item_id': selectedItem,
                     'item_name': selectedItemName,
@@ -240,6 +243,7 @@ class _TodayoffersState extends State<Todayoffers> {
                     'discount_price': discountPrice,
                     'created_at': FieldValue.serverTimestamp(),
                     'Available': true,
+                    'description':description,
                   });
                   
                   ScaffoldMessenger.of(context).showSnackBar(

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:zovo/customer/view/widgets/offercard.dart';
+import 'package:zovo/customer/view/widgets/todayoffercard.dart';
 import 'package:zovo/theme.dart';
 
 class Alltodayoffers extends StatelessWidget {
@@ -68,7 +68,7 @@ class Alltodayoffers extends StatelessWidget {
                         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                         DateTime createdAt = (data['created_at'] as Timestamp).toDate();
                         return data['Available'] == true && 
-                               DateTime.now().difference(createdAt).inHours <= 24;
+                               DateTime.now().difference(createdAt).inHours <= 24 && data['Offertype'] == 'today_offers';
                       }).toList();
         
                       return GridView.builder(
@@ -78,7 +78,7 @@ class Alltodayoffers extends StatelessWidget {
                           crossAxisCount: 2,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 0,
-                          childAspectRatio: 0.65,
+                          childAspectRatio: 0.7,
                         ),
                         itemCount: availableItems.length,
                         itemBuilder: (context, index) {
@@ -109,17 +109,26 @@ class Alltodayoffers extends StatelessWidget {
                               if (shopSnapshot.hasData && shopSnapshot.data!.exists) {
                                 shopName = shopSnapshot.data!.get('shopName') ?? '';
                               }
-                           
-                              return RestaurantCard(
+                           final discountPercentage = ((data['item_price'] - data['discount_price']) / data['item_price'] * 100).toStringAsFixed(0);
+                           final time = data['created_at']?? Timestamp.now();
+                  final datenow = DateTime.now();
+                  final hours = datenow.difference(time.toDate()).inHours;
+                  if (hours < 24) {
+                  var remainingtime = 24 - hours;
+                              return todayoffercard(
                                 imageUrl: data['item_image'],
                                 restaurantName: data['item_name'],
                                 priceInfo: '₹${data['item_price']}',
                                 rating: '4.5',
                                 deliveryTime: '30 min',
                                 cuisines: shopName,
-                                isAd: true,
+                                remainingtime:remainingtime.toString() , discountoffer: discountPercentage,
                               );
+
+                            }
+                            return SizedBox.shrink();
                             },
+
                           );
                         },
                       );
