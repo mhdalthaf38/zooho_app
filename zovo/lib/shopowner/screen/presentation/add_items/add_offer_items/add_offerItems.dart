@@ -287,7 +287,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                     'created_at': FieldValue.serverTimestamp(),
                     'Available': true,
                   });
-                  await _firestore.collection('offers_today').doc('$email+$selectedItem').set({
+                  await _firestore.collection('offers_today').doc('${email}offers${selectedItem}').set({
                      'Offertype':'offers',
                     'email': email,
                     'item_id': selectedItem,

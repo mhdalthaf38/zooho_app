@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:zovo/customer/view/sigup/usersignup.dart';
 import 'package:zovo/shopowner/screen/presentation/sign_in/signUp_page.dart';
-import 'package:zovo/shopowner/screen/presentation/sign_in/signin_page.dart';
+
 import 'package:zovo/theme.dart';
 
 
 
-import '../mainscreen/homescreen/home.dart';
+
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});

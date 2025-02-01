@@ -39,6 +39,7 @@ class todayoffercard extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
                   color: AppColors.secondaryCream,
                   boxShadow: [
                     BoxShadow(
@@ -90,7 +91,7 @@ class todayoffercard extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        "Today",
+                        'EXTRA $discountoffer%',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -99,7 +100,7 @@ class todayoffercard extends StatelessWidget {
                       ),
                       SizedBox(width: 4),
                       Text(
-                        "Offers",
+                        "OFF",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -125,7 +126,7 @@ class todayoffercard extends StatelessWidget {
                 bottom: 20,
                 left: 8,
                 child: Text(
-                  "ITEMS\nAT $priceInfo",
+                  "ITEM\nAT $priceInfo",
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 16,
@@ -141,31 +142,33 @@ class todayoffercard extends StatelessWidget {
               
               // Ad Tag (if applicable)
              
+                // Positioned(
+                //   top: screenWidth * 0.09,
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //       color: Color(0xFFFFE5E5),
+                //       borderRadius: BorderRadius.circular(6),
+                //     ),
+                //     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                //     child: Row(
+                //       children: [
+                //         Text(
+                //           'EXTRA $discountoffer% OFF',
+                //           style: GoogleFonts.poppins(
+                //             fontSize: 12,
+                //             fontWeight: FontWeight.bold,
+                //             color: Colors.red,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
               
-                Positioned(
-                top: 145,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFFE5E5),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                  child: Row(
-                    children: [
-                      Text(
-                        'EXTRA $discountoffer% OFF',
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ],
+            
           ),
+          
           Padding(
             padding: EdgeInsets.all(8.0),
             child: Column(

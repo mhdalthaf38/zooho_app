@@ -78,7 +78,7 @@ class Alltodayoffers extends StatelessWidget {
                           crossAxisCount: 2,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 0,
-                          childAspectRatio: 0.7,
+                          childAspectRatio: 0.65,
                         ),
                         itemCount: availableItems.length,
                         itemBuilder: (context, index) {

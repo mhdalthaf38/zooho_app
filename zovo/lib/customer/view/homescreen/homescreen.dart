@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zovo/customer/view/alloffers/Userhompage.dart';
-import 'package:zovo/customer/view/nearby/nearby_shop.dart';
+import 'package:zovo/customer/view/nearby/allresturent.dart';
+
+
 import 'package:zovo/theme.dart';
 
 class UserHome extends StatefulWidget {
@@ -16,7 +18,7 @@ class _UserHomeState extends State<UserHome> {
 
   final List<Widget> _pages = [
      HomePage(),
-     RestaurantListPage(),
+     TestNearby(),
   ];
 
   @override
@@ -46,6 +48,8 @@ class _UserHomeState extends State<UserHome> {
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: AppColors.secondaryCream,
           currentIndex: _selectedIndex,
+          selectedItemColor: AppColors.primaryOrange,
+          unselectedItemColor: AppColors.primaryText,
           onTap: (index) {
             setState(() {
               _selectedIndex = index;
@@ -53,7 +57,7 @@ class _UserHomeState extends State<UserHome> {
           },
           items: const [
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/images/home.png')),
+              icon: ImageIcon( AssetImage('assets/images/home.png')),
               label: 'Offers'
             ),
             BottomNavigationBarItem(

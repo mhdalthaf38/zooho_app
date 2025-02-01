@@ -78,7 +78,7 @@ class TodayoffersScreen extends StatelessWidget {
                     email: email!,
                     imageUrl: itemData['imageUrl'],
                     title: itemData['name'],
-                    distance: '6.2',
+                 
                     offer: '$discountPercentage%OFF',
                     remainingtime: '${remainingtime.toString()} Hours ',
                     available: available ? 'Available' : 'Unavailable',
@@ -93,7 +93,7 @@ class TodayoffersScreen extends StatelessWidget {
                     email: email!,
                     imageUrl: itemData['imageUrl'],
                     title: itemData['name'],
-                    distance: '6.2',
+                
                     offer: '$discountPercentage%OFF',
                     remainingtime: 'Expired',
                     available: available ? 'Available' : 'Unavailable',

@@ -7,6 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/collectingshopimages.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/marker.dart';
 import 'package:zovo/theme.dart';
 import 'package:http/http.dart' as http;
@@ -83,6 +84,7 @@ Future<String> _getAddressFromLatLng(LatLng position) async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Location saved successfully!')),
       );
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>imageDetailspage()));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to save location: $e')),
@@ -236,6 +238,7 @@ Future<String> _getAddressFromLatLng(LatLng position) async {
   @override
   void initState() {
     super.initState();
+    _determinePosition();
     _searchController.addListener(() {
       _searchPlaces(_searchController.text);
     });

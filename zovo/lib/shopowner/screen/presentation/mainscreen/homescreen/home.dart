@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/homescreen/menupage/menupage.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/homescreen/profilepage/profile.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/homescreen/todayofferscreen/todayoffers.dart';
+import 'package:zovo/shopowner/screen/presentation/sign_in/welcomescreen.dart';
+
 import 'package:zovo/theme.dart';
 import 'offerpage/offerpage.dart';
 
@@ -60,32 +62,40 @@ class _HomeScreenState extends State<HomeScreen>
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage()),
+        showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Sign Out'),
+                          content: Text('Are you sure you want to sign out?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close dialog
+                              },
+                              child: Text('No'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                FirebaseAuth.instance.signOut().then((value) {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                                    (Route<dynamic> route) => false,
+                                  );
+                                });
+                              },
+                              child: Text('Yes'),
+                            ),
+                          ],
                         );
                       },
-                      child: Stack(
-                     
-                        children: [
-                          Text('ZOOho',
-                              style: GoogleFonts.poppins(
-                                  color: AppColors.primaryOrange,
-                                  fontSize: screenWidth * 0.07,
-                                  fontWeight: FontWeight.w900)),
-                                    Positioned(
-                                      top: 23,
-                                      left: 35,
-                                      child: Text('Premium',
-                                                                    style: GoogleFonts.poppins(
-                                                                        color: const Color.fromARGB(255, 177, 143, 5),
-                                                                        fontSize: screenWidth * 0.035,
-                                                                        fontWeight: FontWeight.w600,
-                                                                        fontStyle: FontStyle.italic)),
-                                    ),
-                        ],
-                      ),
+                    );
+                      },
+                      child: Text('ZOOho',
+                          style: GoogleFonts.poppins(
+                              color: AppColors.primaryOrange,
+                              fontSize: screenWidth * 0.07,
+                              fontWeight: FontWeight.w900)),
                     ),
                     GestureDetector(
                       onTap: () {

@@ -88,39 +88,53 @@ class _MainPageState extends State<MainPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _currentIndex = 0;
-                        });
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(AppColors.primaryOrange),shadowColor: WidgetStatePropertyAll(Colors.transparent)),
+                      onPressed: () {
+                         setState(() {
+                        _currentIndex = 0;
+                      });
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Image.asset(
-                            'assets/images/home.png',
-                            width: screenWidth * 0.05,
-                            height: screenHeight * 0.03,
-                            color: AppColors.secondaryCream,
+                          Expanded(
+                            child: Container(
+                              child: Image.asset(
+                                'assets/images/home.png',
+                                width: screenWidth * 0.05,
+                                height: screenHeight * 0.03,
+                                color: AppColors.secondaryCream,
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ),
                     Container(alignment: AlignmentDirectional.bottomCenter),
-                    GestureDetector(
-                      onTap: () {
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        shadowColor: WidgetStatePropertyAll(Colors.transparent),
+                        backgroundColor: WidgetStatePropertyAll(AppColors.primaryOrange)
+                      ),
+                      onPressed: () {
                         setState(() {
-                          _currentIndex = 1;
-                        });
+                        _currentIndex = 1;
+                      });
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Image.asset(
-                            'assets/images/user.png',
-                            width: screenWidth * 0.05,
-                            height: screenHeight * 0.03,
-                            color: AppColors.secondaryCream,
+                          Expanded(
+                            child: Container(
+                              child: Image.asset(
+                                'assets/images/user.png',
+                                width: screenWidth * 0.05,
+                                height: screenHeight * 0.03,
+                                color: AppColors.secondaryCream,
+                              ),
+                            ),
                           ),
                         ],
                       ),

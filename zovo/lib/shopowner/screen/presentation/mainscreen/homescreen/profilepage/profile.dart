@@ -6,6 +6,7 @@ import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20detai
 import 'package:zovo/shopowner/screen/presentation/mainscreen/mainscreen.dart';
 import 'package:zovo/shopowner/screen/presentation/sign_in/signUp_page.dart';
 import 'package:zovo/shopowner/screen/presentation/sign_in/welcomescreen.dart';
+
 import 'package:zovo/theme.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -159,42 +160,48 @@ class ProfilePage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '$shopName',
-                                    style: GoogleFonts.poppins(
-                                      color: AppColors.primaryOrange,
-                                      fontSize: screenWidth * 0.08,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    '$shopAddress , $shoparea',
-                                    style: GoogleFonts.poppins(
-                                      color: AppColors.primaryText,
-                                      fontSize: screenWidth * 0.035,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.phone,
-                                        color: AppColors.primaryOrange,
-                                        size: screenWidth * 0.04,
-                                      ),
-                                      SizedBox(width: screenWidth * 0.02),
-                                      Text(
-                                        shopPhone,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    FittedBox(
+                                    
+                                      child: Text(
+                                        overflow:TextOverflow.ellipsis ,
+                                        '$shopName',
                                         style: GoogleFonts.poppins(
-                                          color: AppColors.primaryText,
-                                          fontSize: screenWidth * 0.035,
+                                          color: AppColors.primaryOrange,
+                                          fontSize: screenWidth * 0.08,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                    ),
+                                    Text(
+                                      '$shopAddress , $shoparea',
+                                      style: GoogleFonts.poppins(
+                                        color: AppColors.primaryText,
+                                        fontSize: screenWidth * 0.035,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.phone,
+                                          color: AppColors.primaryOrange,
+                                          size: screenWidth * 0.04,
+                                        ),
+                                        SizedBox(width: screenWidth * 0.02),
+                                        Text(
+                                          shopPhone,
+                                          style: GoogleFonts.poppins(
+                                            color: AppColors.primaryText,
+                                            fontSize: screenWidth * 0.035,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                               Container(
                                 alignment: AlignmentDirectional.center,

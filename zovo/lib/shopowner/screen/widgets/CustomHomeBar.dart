@@ -9,7 +9,7 @@ class CustomOFFERCard extends StatelessWidget {
   final String rate;
   final String available;
   final String? remainingtime;
-  final String distance;
+
   final String? offer;
   final String email;
   final String collectionName;
@@ -24,7 +24,7 @@ class CustomOFFERCard extends StatelessWidget {
     required this.title,
     required this.available,
      this.remainingtime,
-    required this.distance,
+  
     required this.rate,
     required this.email,
     required this.itemId,
@@ -32,7 +32,7 @@ class CustomOFFERCard extends StatelessWidget {
     this.offer,
   });
 
-  Future<void> checkAndUpdateAvailability() async {
+  Future<void> checkAndUpdateAvailability( ) async {
     try {
       final docSnapshot = await FirebaseFirestore.instance
           .collection(collectionName)
@@ -70,7 +70,53 @@ class CustomOFFERCard extends StatelessWidget {
     }
   }
 
-  Future<void> updateAvailability(bool isAvailable) async {
+
+
+  Future<void> deleteItem(BuildContext context) async {
+
+
+     try {
+      if (collectionName == 'today_offers' ) {
+        await FirebaseFirestore.instance
+            .collection(collectionName)
+            .doc(email)
+            .collection('items')
+            .doc(id)
+           .delete();
+        await FirebaseFirestore.instance
+            .collection(subcollectionName)
+            .doc('$email$itemId')
+            .delete();
+      } else if (collectionName == 'offers' ) {
+      
+
+      
+          await FirebaseFirestore.instance
+              .collection(collectionName)
+              .doc(email)
+              .collection('items')
+              .doc('$id')
+             .delete();
+          await FirebaseFirestore.instance
+              .collection(subcollectionName)
+              .doc('${email}offers${itemId}')
+              .delete();
+        
+      } else {
+        await FirebaseFirestore.instance
+            .collection(collectionName)
+            .doc(email)
+            .collection('items')
+            .doc(id)
+            .delete();
+      }
+    } catch (e) {
+      print('Error deleting item: $e');
+    }
+   
+  }
+
+ Future<void> updateAvailability(bool isAvailable) async {
     try {
       await FirebaseFirestore.instance
           .collection(collectionName)
@@ -86,27 +132,9 @@ class CustomOFFERCard extends StatelessWidget {
       print('Error updating availability: $e');
     }
   }
-
-  Future<void> deleteItem() async {
-    try {
-      await FirebaseFirestore.instance
-          .collection(collectionName)
-          .doc(email)
-          .collection('items')
-          .doc(id)
-          .delete();
-      await FirebaseFirestore.instance
-          .collection(subcollectionName)
-          .doc('$email$itemId')
-          .delete();
-    } catch (e) {
-      print('Error deleting item: $e');
-    }
-  }
-
   Future<void> updatetoAvailable(bool isAvailable, BuildContext context) async {
     try {
-      if (collectionName == 'today_offers' && isAvailable) {
+      if (collectionName == 'today_offers') {
         await FirebaseFirestore.instance
             .collection(collectionName)
             .doc(email)
@@ -123,31 +151,50 @@ class CustomOFFERCard extends StatelessWidget {
           'Available': isAvailable,
           'created_at': Timestamp.now(),
         });
-      } else if (collectionName == 'offers' && isAvailable) {
-        DateTimeRange? dateRange = await showDateRangePicker(
+        print('anythinsdadsadad');
+      } else if (collectionName == 'offers') {
+      
+
+        if (isAvailable ==  true) {
+            DateTimeRange? dateRange = await showDateRangePicker(
           context: context,
           firstDate: DateTime.now(),
           lastDate: DateTime.now().add(Duration(days: 365)),
         );
-
-        if (dateRange != null) {
           await FirebaseFirestore.instance
               .collection(collectionName)
               .doc(email)
               .collection('items')
-              .doc(id)
+              .doc('$id')
+              .update({
+            'Available': isAvailable,
+            'start_date': Timestamp.fromDate(dateRange!.start),
+            'end_date': Timestamp.fromDate(dateRange.end),
+          });
+          await FirebaseFirestore.instance
+              .collection(subcollectionName)
+              .doc('${email}offers${itemId}')
               .update({
             'Available': isAvailable,
             'start_date': Timestamp.fromDate(dateRange.start),
             'end_date': Timestamp.fromDate(dateRange.end),
           });
-          await FirebaseFirestore.instance
-              .collection(subcollectionName)
-              .doc('$email$itemId')
+        }else{
+            await FirebaseFirestore.instance
+              .collection(collectionName)
+              .doc(email)
+              .collection('items')
+              .doc('$id')
               .update({
             'Available': isAvailable,
-            'start_date': Timestamp.fromDate(dateRange.start),
-            'end_date': Timestamp.fromDate(dateRange.end),
+           
+          });
+          await FirebaseFirestore.instance
+              .collection(subcollectionName)
+              .doc('${email}offers${itemId}')
+              .update({
+            'Available': isAvailable,
+          
           });
         }
       } else {
@@ -157,6 +204,7 @@ class CustomOFFERCard extends StatelessWidget {
             .collection('items')
             .doc(id)
             .update({'Available': isAvailable});
+            
       }
     } catch (e) {
       print('Error updating availability: $e');
@@ -183,21 +231,46 @@ class CustomOFFERCard extends StatelessWidget {
             child: Text('Update'),
             onPressed: () async {
               if (priceController.text.isNotEmpty) {
-                try {
-                  await FirebaseFirestore.instance
-                      .collection(collectionName)
-                      .doc(email)
-                      .collection('items')
-                      .doc(id)
-                      .update({'price': priceController.text});
-                  await FirebaseFirestore.instance
-                      .collection(subcollectionName)
-                      .doc('$email$itemId')
-                      .update({'discount_price': priceController.text});
-                  Navigator.pop(context);
-                } catch (e) {
-                  print('Error updating price: $e');
-                }
+              try {
+      if (collectionName == 'today_offers' ) {
+        await FirebaseFirestore.instance
+            .collection(collectionName)
+            .doc(email)
+            .collection('items')
+            .doc(id)
+             .update({'price': priceController.text});
+        await FirebaseFirestore.instance
+            .collection(subcollectionName)
+            .doc('$email$itemId')
+         .update({'discount_price': priceController.text});
+      } else if (collectionName == 'offers') {
+      
+      
+          await FirebaseFirestore.instance
+              .collection(collectionName)
+              .doc(email)
+              .collection('items')
+              .doc('$id')
+             .update({'price': priceController.text});
+          await FirebaseFirestore.instance
+              .collection(subcollectionName)
+              .doc('${email}offers${itemId}')
+              .update({'discount_price': priceController.text});
+        
+      } else {
+        await FirebaseFirestore.instance
+            .collection(collectionName)
+            .doc(email)
+            .collection('items')
+            .doc(id)
+           .update({'price': priceController.text});
+      }
+      Navigator.of(context).pop();
+    } catch (e) {
+      print('Error updating availability: $e');
+    }
+
+
               }
             },
           ),
@@ -307,9 +380,9 @@ class CustomOFFERCard extends StatelessWidget {
                         if (value == 'Available') {
                           updatetoAvailable(true, context);
                         } else if (value == 'Not Available') {
-                          updateAvailability(false);
+                          updatetoAvailable(false,context);
                         } else if (value == 'Delete') {
-                          deleteItem();
+                          deleteItem(context);
                         } else if (value == 'Edit') {
                           editPrice(context);
                         }

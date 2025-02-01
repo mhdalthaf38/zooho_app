@@ -240,7 +240,7 @@ class _TodayoffersState extends State<Todayoffers> {
                     'item_name': selectedItemName,
                     'item_image': selectedItemImage,
                     'item_price': currentPrice,
-                    'discount_price': discountPrice,
+                    'discount_price': discountPrice.toDouble(),
                     'created_at': FieldValue.serverTimestamp(),
                     'Available': true,
                     'description':description,
