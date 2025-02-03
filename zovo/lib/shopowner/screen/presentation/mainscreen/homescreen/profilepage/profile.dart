@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/detailspage.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/mainscreen.dart';
-import 'package:zovo/shopowner/screen/presentation/sign_in/signUp_page.dart';
+
 import 'package:zovo/shopowner/screen/presentation/sign_in/welcomescreen.dart';
 
 import 'package:zovo/theme.dart';
@@ -29,7 +29,7 @@ class ProfilePage extends StatelessWidget {
           );
         }
 
-        List<String> images = List<String>.from(snapshot.data!['shopImages']);
+        String images =snapshot.data!['shopImages'];
         String shopName = snapshot.data!['shopName'];
         String shopAddress = snapshot.data!['location'] ;
 
@@ -62,7 +62,7 @@ class ProfilePage extends StatelessWidget {
                       return Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage(images[index]),
+                            image: NetworkImage(images),
                             fit: BoxFit.cover,
                           ),
                         ),

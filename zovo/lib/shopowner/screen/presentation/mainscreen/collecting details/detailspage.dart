@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/placepicker.dart';
+import 'package:zovo/shopowner/screen/presentation/sign_in/welcomescreen.dart';
 import 'package:zovo/theme.dart';
 
 class Detailspage extends StatefulWidget {
@@ -12,6 +12,7 @@ class Detailspage extends StatefulWidget {
 }
 
 class _DetailspageState extends State<Detailspage> {
+     bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _shopNameController = TextEditingController();
   final TextEditingController _LocationController = TextEditingController();
@@ -35,22 +36,66 @@ class _DetailspageState extends State<Detailspage> {
     'Kannur': ['Thalassery', 'Payyanur', 'Mattannur', 'Iritty', 'Kannur City'],
     'Kasaragod': ['Kanhangad', 'Nileshwaram', 'Cheruvathur', 'Uppala', 'Manjeshwar'],
   };
-
+void _submit() async {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            try {
+                              final email = FirebaseAuth.instance.currentUser?.email;
+                              await FirebaseFirestore.instance.collection('shops').doc(email).set({
+                                'shopName': _shopNameController.text,
+                                'location': _LocationController.text,
+                                'area': _areaController.text,
+                                'phoneNumber': _phonenumberController.text,
+                                'shopDescription': _shopDescriptionController.text,
+                                'email': email,
+                                'shopstatus':true
+                              });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => PlacePicker()),
+                              );
+                            } finally {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          }
+                        }
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    bool isLoading = false;
+ 
 
     return Scaffold(
       backgroundColor: AppColors.primaryOrange,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.secondaryCream),
-          onPressed: () => Navigator.pop(context),
-        ),
+       actions: [GestureDetector(
+        onTap: ()async{
+          try {
+            await FirebaseFirestore.instance.collection('shops').doc(FirebaseAuth.instance.currentUser!.email).delete();
+
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>WelcomeScreen()));
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Check your internet connection')));
+          }
+        },
+         child: Row(
+           children: [
+            
+             Text('Switch to User ',style: GoogleFonts.poppins(color: AppColors.secondaryCream,fontWeight: FontWeight.bold),)
+              ,Padding(
+                padding: const EdgeInsets.only(left: 10,right: 10),
+                child: Icon(Icons.error,color: AppColors.secondaryCream,),
+              ),
+           ],
+         ),
+       )],
       ),
       body: Stack(
         children: [
@@ -292,33 +337,7 @@ class _DetailspageState extends State<Detailspage> {
                             vertical: screenHeight * 0.02,
                           ),
                         ),
-                        onPressed: isLoading ? null : () async {
-                          if (_formKey.currentState!.validate()) {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            try {
-                              final email = FirebaseAuth.instance.currentUser?.email;
-                              await FirebaseFirestore.instance.collection('shops').doc(email).set({
-                                'shopName': _shopNameController.text,
-                                'location': _LocationController.text,
-                                'area': _areaController.text,
-                                'phoneNumber': _phonenumberController.text,
-                                'shopDescription': _shopDescriptionController.text,
-                                'email': email,
-                                'shopstatus':true
-                              });
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => PlacePicker()),
-                              );
-                            } finally {
-                              setState(() {
-                                isLoading = false;
-                              });
-                            }
-                          }
-                        },
+                        onPressed: isLoading ? null : _submit,
                         child: isLoading
                             ? CircularProgressIndicator(color: AppColors.secondaryCream)
                             : Text(

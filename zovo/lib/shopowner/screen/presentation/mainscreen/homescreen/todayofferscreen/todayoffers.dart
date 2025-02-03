@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:zovo/customer/view/widgets/shimmerverticalloadingwidget.dart';
 import 'package:zovo/shopowner/screen/widgets/CustomHomeBar.dart';
 import 'package:zovo/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -53,7 +54,7 @@ class TodayoffersScreen extends StatelessWidget {
                     return SizedBox.shrink();
                   }
                   if (itemSnapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return verticalshimmer();
                   }
                   if (!itemSnapshot.hasData || !itemSnapshot.data!.exists) {
                     return SizedBox.shrink();

@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,7 +9,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zovo/theme.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
 class AddMenuItem extends StatefulWidget {
   @override
   _AddMenuItemState createState() => _AddMenuItemState();
@@ -20,7 +23,8 @@ class _AddMenuItemState extends State<AddMenuItem> {
   final _priceController = TextEditingController();
   final _descriptionController = TextEditingController();
   bool _isLoading = false;
-
+  static const String clientId =
+      "c5ed6cacbb2b5ee"; 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -30,7 +34,18 @@ class _AddMenuItemState extends State<AddMenuItem> {
       });
     }
   }
+static Future<Uint8List> convertToJpeg(File file) async {
+    Uint8List imageBytes = await file.readAsBytes();
+    img.Image? image = img.decodeImage(imageBytes);
 
+    if (image == null) {
+      print("Error: Could not decode image.");
+      return imageBytes; // Return original if decoding fails
+    }
+
+    // ✅ Convert to JPEG format
+    return Uint8List.fromList(img.encodeJpg(image, quality: 90)); 
+  }
   Future<void> _uploadItem() async {
     if (_image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -45,19 +60,51 @@ class _AddMenuItemState extends State<AddMenuItem> {
       });
 
       try {
-        // Upload image to Supabase Storage
-        final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-        final storageResponse = await Supabase.instance.client.storage
-            .from('shop menu items images')
-            .upload(fileName, _image!);
+       
+  
+    // Convert image to Base64
+       Uint8List convertedImage = await convertToJpeg(_image!);
+     String base64Image = base64Encode(convertedImage);
+        String? imageUrl;
+        var response = await http.post(
+          Uri.parse("https://api.imgur.com/3/upload"),
+          headers: {
+            "Authorization": "Client-ID $clientId",
+          },
+          body: {
+            "image": base64Image,
+            "type": "base64",
+          },
+        );
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          String imageUrls = data["data"]["link"]; // Get the image URL
+          print("Uploaded Image URL: $imageUrls");
+          setState(() {
+            imageUrl = imageUrls;
+          });
+        } else {
+          print("Error: ${response.body}");
+        }
 
-        // Get the public URL of the uploaded image
-        final String imageUrl = Supabase.instance.client.storage
-            .from('shop menu items images')
-            .getPublicUrl(fileName);
-   final email = FirebaseAuth.instance.currentUser?.email;
+        // Upload image to Supabase Storage
+        // final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+        // final storageResponse = await Supabase.instance.client.storage
+        //     .from('shop menu items images')
+        //     .upload(fileName, _image!);
+
+        // // Get the public URL of the uploaded image
+        // final String imageUrl = Supabase.instance.client.storage
+        //     .from('shop menu items images')
+        //     .getPublicUrl(fileName);
+        if(imageUrl != null ){
+           final email = FirebaseAuth.instance.currentUser?.email;
         // Add item to Firebase
-        await FirebaseFirestore.instance.collection('menu_items').doc(email).collection('items').add({
+        await FirebaseFirestore.instance
+            .collection('menu_items')
+            .doc(email)
+            .collection('items')
+            .add({
           'name': _nameController.text,
           'price': double.parse(_priceController.text),
           'description': _descriptionController.text,
@@ -69,7 +116,7 @@ class _AddMenuItemState extends State<AddMenuItem> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Item added successfully')),
         );
-        
+
         // Clear form
         _nameController.clear();
         _priceController.clear();
@@ -77,9 +124,16 @@ class _AddMenuItemState extends State<AddMenuItem> {
         setState(() {
           _image = null;
         });
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(' image not uploaded ,Check your internet')),
+        );
+        }
+       
       } catch (e) {
+        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error adding item: $e')),
+          SnackBar(content: Text(' Check Your Network connection :$e')),
         );
       } finally {
         setState(() {
@@ -97,11 +151,14 @@ class _AddMenuItemState extends State<AddMenuItem> {
       backgroundColor: AppColors.secondaryCream,
       appBar: AppBar(
         backgroundColor: AppColors.secondaryCream,
-        title: Text('Add Menu Item',style: GoogleFonts.poppins(
-                      color: AppColors.secondaryCream,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),),
+        title: Text(
+          'Add Menu Item',
+          style: GoogleFonts.poppins(
+            color: AppColors.secondaryCream,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
@@ -115,15 +172,25 @@ class _AddMenuItemState extends State<AddMenuItem> {
                 child: Container(
                   height: 200,
                   decoration: BoxDecoration(
-                    border: Border.all(color: _image == null ? Colors.red : AppColors.primaryOrange),
+                    border: Border.all(
+                        color: _image == null
+                            ? Colors.red
+                            : AppColors.primaryOrange),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: _image != null
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(8),
-                          child: Image.file(_image!, fit: BoxFit.cover,)
-                        )
-                      : Center(child: Text('Tap to add image *',style: GoogleFonts.poppins( color: Colors.red, fontSize: 16,))),
+                          child: Image.file(
+                            _image!,
+                            fit: BoxFit.cover,
+                          ))
+                      : Center(
+                          child: Text('Tap to add image *',
+                              style: GoogleFonts.poppins(
+                                color: Colors.red,
+                                fontSize: 16,
+                              ))),
                 ),
               ),
               SizedBox(height: 16),
@@ -232,11 +299,14 @@ class _AddMenuItemState extends State<AddMenuItem> {
                 onPressed: _isLoading ? null : _uploadItem,
                 child: _isLoading
                     ? CircularProgressIndicator()
-                    : Text('Add Item',style: GoogleFonts.poppins(
-                      color: AppColors.secondaryCream,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),),
+                    : Text(
+                        'Add Item',
+                        style: GoogleFonts.poppins(
+                          color: AppColors.secondaryCream,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ],
           ),

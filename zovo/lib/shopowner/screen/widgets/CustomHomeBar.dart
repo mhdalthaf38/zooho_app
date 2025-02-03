@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/collectingshopimages.dart';
 import 'package:zovo/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CustomOFFERCard extends StatelessWidget {
+  final String? filename;
   final String imageUrl;
   final String title;
   final String rate;
@@ -19,6 +22,7 @@ class CustomOFFERCard extends StatelessWidget {
   const CustomOFFERCard({
     super.key,
     required this.id,
+    this.filename,
     required this.collectionName,
     required this.imageUrl,
     required this.title,
@@ -72,6 +76,41 @@ class CustomOFFERCard extends StatelessWidget {
 
 
 
+Future<void> deleteImageFromSupabase(String fileUrl) async {
+  final supabase = Supabase.instance.client;
+  final bucketName = 'shop menu items images'; // Your bucket name
+
+  // Extract file path from URL
+  String filePath = extractFilePath(fileUrl);
+
+  if (filePath.isNotEmpty) {
+    final response = await supabase.storage.from(bucketName).remove([filePath]);
+
+    print(response);
+  } else {
+    print('Invalid file URL');
+  }
+}
+
+// Function to extract file path from the URL
+String extractFilePath(String url) {
+  try {
+    Uri uri = Uri.parse(url);
+    List<String> parts = uri.path.split('/public/');
+    return parts.length > 1 ? parts[1].replaceAll('//', '/') : '';
+  } catch (e) {
+    print('Error extracting file path: $e');
+    return '';
+  }
+}
+
+// Usage:
+void main() {
+  String fileUrl = "https://uyoyxxlsihxfcdlfddae.supabase.co/storage/v1/object/public/shop%20menu%20items%20images//1738584277559";
+  deleteImageFromSupabase(fileUrl);
+}
+
+
   Future<void> deleteItem(BuildContext context) async {
 
 
@@ -109,6 +148,28 @@ class CustomOFFERCard extends StatelessWidget {
             .collection('items')
             .doc(id)
             .delete();
+              await FirebaseFirestore.instance
+            .collection('offers')
+            .doc(email)
+            .collection('items')
+            .doc(id)
+            .delete();
+             await FirebaseFirestore.instance
+            .collection('today_offers')
+            .doc(email)
+            .collection('items')
+            .doc(id)
+            .delete();
+              await FirebaseFirestore.instance
+              .collection(subcollectionName)
+              .doc('${email}offers${itemId}')
+              .delete();
+                await FirebaseFirestore.instance
+            .collection(subcollectionName)
+            .doc('$email$itemId')
+            .delete();
+            deleteImageFromSupabase(imageUrl);
+            await supabase.storage.from('shop menu items images').remove(['shop menu items images//$filename']);
       }
     } catch (e) {
       print('Error deleting item: $e');
@@ -278,6 +339,8 @@ class CustomOFFERCard extends StatelessWidget {
       ),
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -476,3 +539,5 @@ class CustomOFFERCard extends StatelessWidget {
     );
   }
 }
+
+

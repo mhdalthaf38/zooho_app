@@ -10,21 +10,25 @@ class CustomMarkerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          child: Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 3),
-              boxShadow: [
-                BoxShadow(color: Colors.black26, blurRadius: 4, spreadRadius: 1),
-              ],
-            ),
-            child: ClipOval(
-              child: Image.network(imageUrl, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) {
-                return Icon(Icons.store, size: 40, color: Colors.grey);
-              }),
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 3),
+            boxShadow: [
+              BoxShadow(color: Colors.black26, blurRadius: 4, spreadRadius: 1),
+            ],
+          ),
+          child: ClipOval(
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: Image.network(
+                imageUrl,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(Icons.store, size: 40, color: Colors.grey);
+                },
+              ),
             ),
           ),
         ),

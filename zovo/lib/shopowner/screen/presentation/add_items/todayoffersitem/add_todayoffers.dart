@@ -23,7 +23,7 @@ class _TodayoffersState extends State<Todayoffers> {
   DateTime? endDate;
   String? dropdownError;
   String? priceError;
-
+bool isloading =false;
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -188,7 +188,7 @@ class _TodayoffersState extends State<Todayoffers> {
                         vertical: screenHeight * 0.02,
                       ),
                     ),
-              onPressed: () async {
+              onPressed:isloading?null: () async {
                 bool hasError = false;
                 
                 if (selectedItem == null) {
@@ -206,6 +206,9 @@ class _TodayoffersState extends State<Todayoffers> {
                 }
 
                 if (!hasError) {
+                  setState(() {
+                    isloading =true;
+                  });
                   // Check if the item already exists in today_offers
                   final existingOffer = await _firestore
                       .collection('today_offers')
@@ -218,6 +221,9 @@ class _TodayoffersState extends State<Todayoffers> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('This item already exists in offers')),
                     );
+                    setState(() {
+                      isloading =false;
+                    });
                     return;
                   }
 
@@ -225,7 +231,7 @@ class _TodayoffersState extends State<Todayoffers> {
                   final discountPrice = double.parse(_discountPriceController.text);
 
                   // Add to today_offers collection
-                  await _firestore.collection('today_offers').doc(email).collection('items').add({
+                  await _firestore.collection('today_offers').doc(email).collection('items').doc(selectedItem).set({
                     'item_id': selectedItem,
                     'price': discountPrice,
                     'created_at': FieldValue.serverTimestamp(),
@@ -251,6 +257,7 @@ class _TodayoffersState extends State<Todayoffers> {
                   );
                   
                   setState(() {
+                    isloading =false;
                     selectedItem = null;
                     currentPrice = null;
                     selectedItemImage = null;
@@ -263,7 +270,7 @@ class _TodayoffersState extends State<Todayoffers> {
                   });
                 }
               },
-              child: Text('Add to Offers',style: GoogleFonts.poppins(
+              child:isloading?CircularProgressIndicator(color: AppColors.secondaryCream,): Text('Add to Offers',style: GoogleFonts.poppins(
                       color: AppColors.secondaryCream,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,

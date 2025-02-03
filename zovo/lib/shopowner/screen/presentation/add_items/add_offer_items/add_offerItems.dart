@@ -25,6 +25,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
   String? selectedItemImage;
   String? selectedItemName;
   String? description;
+  bool isloading =false;
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -238,7 +239,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                         vertical: screenHeight * 0.02,
                       ),
                     ),
-              onPressed: () async {
+              onPressed:isloading?null: () async {
                 bool hasError = false;
                 
                 if (selectedItem == null) {
@@ -263,6 +264,9 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                 }
                 
                 if (!hasError) {
+                  setState(() {
+                    isloading =true;
+                  });
                   // Check if offer already exists
                   final existingOffers = await _firestore
                       .collection('offers')
@@ -276,10 +280,13 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Already added the offer')),
                     );
+                       setState(() {
+                    isloading =false;
+                  });
                     return;
                   }
 
-                  await _firestore.collection('offers').doc(email).collection('items').add({
+                  await _firestore.collection('offers').doc(email).collection('items').doc(selectedItem).set({
                     'item_id': selectedItem,
                     'price': double.parse(_discountPriceController.text),
                     'start_date': Timestamp.fromDate(startDate!),
@@ -306,6 +313,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                   );
                   
                   setState(() {
+                    isloading=false;
                     selectedItem = null;
                     _discountPriceController.clear();
                     _dateController.clear();
@@ -317,7 +325,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                   });
                 }
               },
-              child: Text('Add to Offers',style: GoogleFonts.poppins(
+              child:isloading?CircularProgressIndicator(): Text('Add to Offers',style: GoogleFonts.poppins(
                       color: AppColors.secondaryCream,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,

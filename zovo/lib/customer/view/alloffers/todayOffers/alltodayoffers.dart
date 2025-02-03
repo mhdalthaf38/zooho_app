@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:zovo/customer/view/widgets/alldetailswidget.dart';
 import 'package:zovo/customer/view/widgets/todayoffercard.dart';
 import 'package:zovo/theme.dart';
 
 class Alltodayoffers extends StatelessWidget {
-  const Alltodayoffers({super.key});
+  final userlocation;
+  const Alltodayoffers({super.key,required this.userlocation});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,14 @@ class Alltodayoffers extends StatelessWidget {
         padding:  EdgeInsets.all(screenwidth * 0.04),
         child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('offers_today').snapshots(),                  
-                    builder: (context, snapshot) {                    
+                    builder: (context, snapshot) {    
+                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No Today offers Added',style:  GoogleFonts.poppins(
+                      color: AppColors.primaryText,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),));
+          }                
                       if (snapshot.hasError) {
                         return Text('Something went wrong');
                       }
@@ -105,6 +115,15 @@ class Alltodayoffers extends StatelessWidget {
                                   ),
                                 );
                               }
+                              String shoplocation = shopSnapshot.data?.get('location') ?? '';
+                             final shoplatitude =
+                                      shopSnapshot.data?.get('latitude');
+                                       final shoplongitude =
+                                      shopSnapshot.data?.get('longitude');
+                                   String shopemail =
+                                  shopSnapshot.data?.get('email') ?? '';
+                                   List<dynamic> Shopimages =
+                                  shopSnapshot.data?.get('shopImages') ?? '';
                               String shopName = '';
                               if (shopSnapshot.hasData && shopSnapshot.data!.exists) {
                                 shopName = shopSnapshot.data!.get('shopName') ?? '';
@@ -115,14 +134,19 @@ class Alltodayoffers extends StatelessWidget {
                   final hours = datenow.difference(time.toDate()).inHours;
                   if (hours < 24) {
                   var remainingtime = 24 - hours;
-                              return todayoffercard(
-                                imageUrl: data['item_image'],
-                                restaurantName: data['item_name'],
-                                priceInfo: '₹${data['item_price']}',
-                                rating: '4.5',
-                                deliveryTime: '30 min',
-                                cuisines: shopName,
-                                remainingtime:remainingtime.toString() , discountoffer: discountPercentage,
+                              return GestureDetector(
+                                onTap: (){
+                                    showProductDetails(context ,userlocation ,shoplongitude, shoplatitude, shopemail,  data['item_image'],  data['item_name'],  data['description'],  shopName,  shoplocation, '₹${data['item_price']}', Shopimages[0]);
+                                },
+                                child: todayoffercard(
+                                  imageUrl: data['item_image'],
+                                  restaurantName: data['item_name'],
+                                  priceInfo: '₹${data['item_price']}',
+                                  rating: '4.5',
+                                  deliveryTime: '30 min',
+                                  cuisines: shopName,
+                                  remainingtime:remainingtime.toString() , discountoffer: discountPercentage,
+                                ),
                               );
 
                             }
@@ -138,3 +162,4 @@ class Alltodayoffers extends StatelessWidget {
     );
   }
 }
+

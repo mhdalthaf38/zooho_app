@@ -1,13 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/mainscreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:zovo/shopowner/screen/presentation/mainscreen/collecting%20details/detailspage.dart';
+import 'package:image/image.dart' as img;
 import 'package:zovo/theme.dart';
+import 'package:http/http.dart' as http;
 
 final supabase = Supabase.instance.client;
 
@@ -17,6 +22,107 @@ class imageDetailspage extends StatefulWidget {
 }
 
 class _imageDetailspageState extends State<imageDetailspage> {
+  static Future<Uint8List> convertToJpeg(File file) async {
+    Uint8List imageBytes = await file.readAsBytes();
+    img.Image? image = img.decodeImage(imageBytes);
+
+    if (image == null) {
+      print("Error: Could not decode image.");
+      return imageBytes; // Return original if decoding fails
+    }
+
+    // ✅ Convert to JPEG format
+    return Uint8List.fromList(img.encodeJpg(image, quality: 90));
+  }
+
+
+void _selectphoto() async {
+setState(() {
+  isLoading = true;
+});
+                        final ImagePicker _picker = ImagePicker();
+                        final XFile? image = await _picker.pickImage(
+                            source: ImageSource.gallery);
+                        if (image != null) {
+                          setState(() {
+                            _image = File(image.path);
+                          });
+                        }
+
+                        if (_image != null) {
+                          final email =
+                              FirebaseAuth.instance.currentUser?.email;
+
+                          try {
+                            String? imageUrl;
+                            Uint8List convertedImage =
+                                await convertToJpeg(_image!);
+                            String base64Image = base64Encode(convertedImage);
+
+                            var response = await http.post(
+                              Uri.parse("https://api.imgur.com/3/upload"),
+                              headers: {
+                                "Authorization": "Client-ID $clientId",
+                              },
+                              body: {
+                                "image": base64Image,
+                                "type": "base64",
+                              },
+                            );
+                            if (response.statusCode == 200) {
+                              var data = jsonDecode(response.body);
+                              String imageUrls =
+                                  data["data"]["link"]; // Get the image URL
+                              print("Uploaded Image URL: $imageUrls");
+                              setState(() {
+                                imageUrl = imageUrls;
+                              });
+                            } else {
+                              print("Error: ${response.body}");
+                            }
+                            if (imageUrl == null) {
+                              return print('Try again');
+                            } else {
+                              // First create the document if it doesn't exist
+                              await FirebaseFirestore.instance
+                                  .collection('shops')
+                                  .doc(email)
+                                  .set({'shopImages': ''},
+                                      SetOptions(merge: true));
+
+                              // Then update the array with all new images
+                              await FirebaseFirestore.instance
+                                  .collection('shops')
+                                  .doc(email)
+                                  .update({'shopImages': imageUrl});
+
+                              if (mounted) {
+                               
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MainPage()));
+                              }
+                            }
+                          } catch (e) {
+                            print(e);
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text('Error uploading images: $e')));
+                            }
+                          }
+                        }
+                        setState(() {
+  isLoading = false;
+});
+                      }
+
+
+  File? _image;
+  static const String clientId = "c5ed6cacbb2b5ee";
+  bool isLoading =false;
   @override
   Widget build(BuildContext context) {
     // Fetching screen height and width dynamically
@@ -86,75 +192,8 @@ class _imageDetailspageState extends State<imageDetailspage> {
                           vertical: screenHeight * 0.02, // Responsive padding
                         ),
                       ),
-                      onPressed: () async {
-                        final ImagePicker picker = ImagePicker();
-                        final List<XFile>? images =
-                            await picker.pickMultiImage();
-
-                        if (images != null && images.isNotEmpty) {
-                          final email = FirebaseAuth.instance.currentUser?.email;
-                          List<String> imageUrls = [];
-
-                          try {
-                            for (var image in images) {
-                              final bytes = await image.readAsBytes();
-                              final fileExt = image.path.split('.').last;
-                              final fileName =
-                                  '${DateTime.now().toIso8601String()}.$fileExt';
-                              final filePath = fileName;
-
-                              // Create a user-specific path
-                              final userSpecificPath =
-                                  'users/$email/$filePath';
-
-                              await supabase.storage
-                                  .from('shop_images')
-                                  .uploadBinary(userSpecificPath, bytes);
-
-                              final imageUrl = supabase.storage
-                                  .from('shop_images')
-                                  .getPublicUrl(userSpecificPath);
-
-                              imageUrls.add(imageUrl);
-                            }
-
-                            // First create the document if it doesn't exist
-                            await FirebaseFirestore.instance
-                                .collection('shops')
-                                .doc(email)
-                                .set({'shopImages': []},
-                                    SetOptions(merge: true));
-
-                            // Then update the array with all new images
-                            await FirebaseFirestore.instance
-                                .collection('shops')
-                                .doc(email)
-                                .update({
-                              'shopImages': FieldValue.arrayUnion(imageUrls)
-                            });
-
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Images uploaded successfully')));
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MainPage()));
-                            }
-                          } catch (e) {
-                            print(e);
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                          Text('Error uploading images: $e')));
-                            }
-                          }
-                        }
-                      },
-                      child: Text(
+                      onPressed: isLoading? null: _selectphoto,
+                      child:isLoading?CircularProgressIndicator(color: AppColors.secondaryCream,): Text(
                         "Upload photos",
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w900,

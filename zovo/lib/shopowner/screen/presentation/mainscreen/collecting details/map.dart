@@ -20,6 +20,7 @@ class Mapscreen extends StatefulWidget {
 }
 
 class _MapscreenState extends State<Mapscreen> {
+    bool isloading = false;
   final _mapController = MapController();
   final _searchController = TextEditingController();
   List<MarkedData> _markedData = [];
@@ -33,6 +34,7 @@ class _MapscreenState extends State<Mapscreen> {
   String? _locationAddress;
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
+  
     LocationPermission permission;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -51,17 +53,20 @@ class _MapscreenState extends State<Mapscreen> {
     }
     return await Geolocator.getCurrentPosition();
   }
-Future<String> _getAddressFromLatLng(LatLng position) async {
-    final url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}';
+
+  Future<String> _getAddressFromLatLng(LatLng position) async {
+    final url =
+        'https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}';
     final response = await http.get(Uri.parse(url));
     final data = json.decode(response.body);
     return data['display_name'];
   }
+
   void _showcurrentlocation() async {
     try {
       Position position = await _determinePosition();
       LatLng currentlatlang = LatLng(position.latitude, position.longitude);
-       String address = await _getAddressFromLatLng(currentlatlang);
+      String address = await _getAddressFromLatLng(currentlatlang);
       setState(() {
         _mapController.move(currentlatlang, 19.0);
         _myposition = currentlatlang;
@@ -72,25 +77,29 @@ Future<String> _getAddressFromLatLng(LatLng position) async {
     }
   }
 
- Future<void> _saveLocationToFirebase(LatLng location) async {
+  Future<void> _saveLocationToFirebase(LatLng location) async {
     try {
-         final email = FirebaseAuth.instance.currentUser?.email;
+      setState(() {
+        isloading = true;
+      });
+      final email = FirebaseAuth.instance.currentUser?.email;
       await FirebaseFirestore.instance.collection('shops').doc(email).update({
         'latitude': location.latitude,
         'longitude': location.longitude,
         'address': _locationAddress,
         'timestamp': FieldValue.serverTimestamp(),
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Location saved successfully!')),
-      );
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>imageDetailspage()));
+     
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => imageDetailspage()));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to save location: $e')),
       );
     }
-  
+       setState(() {
+        isloading = false;
+      });
   }
 
   void _addmarker(LatLng position, String title, String description) {
@@ -252,10 +261,10 @@ Future<String> _getAddressFromLatLng(LatLng position) async {
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
-                onTap: (tapPosition, point)async {
+                onTap: (tapPosition, point) async {
                   _selectedLocation = point;
                   _draggedPosition = _selectedLocation;
-                   String address = await _getAddressFromLatLng(point);
+                  String address = await _getAddressFromLatLng(point);
                   setState(() {
                     _selectedLocation = point;
                     _draggedPosition = point;
@@ -369,59 +378,83 @@ Future<String> _getAddressFromLatLng(LatLng position) async {
               ],
             ),
           ),
-           if (_selectedLocation != null && _locationAddress != null)
-            Positioned(
-              bottom: 40,
-              left: 20,
-              right: 20,
-              child: Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Selected Location',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(_locationAddress!),
-                    SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => _saveLocationToFirebase(_selectedLocation!),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryOrange,
-                          padding: EdgeInsets.symmetric(vertical: 12),
+          if (_selectedLocation != null && _locationAddress != null)
+            DraggableScrollableSheet(
+                controller: DraggableScrollableController(),
+                initialChildSize: 0.25, // Default height when opened
+                minChildSize: 0.1, // Min height (collapsed)
+                maxChildSize: 0.4, // Max height (fully expanded)
+                builder: (context, scrollController) {
+                  return Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: Offset(0, 5),
                         ),
-                        child: Text('Confirm Location'),))]))),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Selected Location',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(_locationAddress!),
+                        SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 55,
+                          child:  ElevatedButton.icon(
+                            onPressed: () {
+                              if (isloading == true) {
+                                return null;
+                              }else{
+                                _saveLocationToFirebase(_selectedLocation!);
+                              }
+                                
+                            },
+                            icon:isloading?null: Icon(Icons.location_pin, size: 18),
+                            label:isloading?CircularProgressIndicator(color: AppColors.secondaryCream,): Text('Confirm Your Shop Location'),
+                            style: ElevatedButton.styleFrom(
+                              
+                              backgroundColor: AppColors.accentGreen,
+                              foregroundColor: Colors.white,
+                              padding:
+                                  EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(8)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
           Positioned(
-            top: 550,
-            right: 20,
-            child: Column(children: [FloatingActionButton(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.indigo,
-              onPressed: 
-              _showcurrentlocation,
-    
-              child: Icon(Icons.location_searching_rounded),
-            ),],)
-          )
+              top: 550,
+              right: 20,
+              child: Column(
+                children: [
+                  FloatingActionButton(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.indigo,
+                    onPressed: _showcurrentlocation,
+                    child: Icon(Icons.location_searching_rounded),
+                  ),
+                ],
+              ))
         ],
       ),
     );

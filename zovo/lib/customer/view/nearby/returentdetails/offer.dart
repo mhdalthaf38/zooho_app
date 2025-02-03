@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:zovo/customer/view/widgets/shimmerverticalloadingwidget.dart';
+import 'package:zovo/customer/view/widgets/offercard.dart';
 import 'package:zovo/shopowner/screen/widgets/CustomHomeBar.dart';
 import 'package:zovo/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class Offerpage extends StatelessWidget {
-  const Offerpage({super.key});
+class Offers extends StatelessWidget {
+  String? email;
+
+   Offers({super.key,required this.email});
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: AppColors.secondaryCream,
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
           .collection('offers')
-          .doc(user?.email)
+          .doc(email)
           .collection('items')
           .snapshots(),
         builder: (context, snapshot) {
@@ -43,7 +45,7 @@ class Offerpage extends StatelessWidget {
               return StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('menu_items')
-                    .doc(user!.email)
+                    .doc(email)
                     .collection('items')
                     .doc(data['item_id'])
                     .snapshots(),
@@ -52,7 +54,7 @@ class Offerpage extends StatelessWidget {
                     return Center(child: Text('Error loading item details'));
                   }
                   if (itemSnapshot.connectionState == ConnectionState.waiting) {
-                    return verticalshimmer();
+                    return Center(child: CircularProgressIndicator());
                   }
                   if (!itemSnapshot.hasData || !itemSnapshot.data!.exists) {
                     return SizedBox.shrink();
@@ -64,7 +66,7 @@ class Offerpage extends StatelessWidget {
                   final discountPercentage = ((realprice - discountprice) / realprice * 100).toStringAsFixed(0);
                   final menuavailable = itemData['Available'];
                   final available = menuavailable ? data['Available'] : menuavailable;          
-                  final email = user.email;
+                
                  
                   final endtime =(data['end_date'] as Timestamp).toDate();
                   final datenow = DateTime.now();
@@ -72,35 +74,26 @@ class Offerpage extends StatelessWidget {
                   if (datenow.isBefore(endtime)) {
                     
                   String remainingtime ="${endtime.day}-${endtime.month}-${endtime.year}";
-                   return CustomOFFERCard(
-                    itemId: data['item_id'],
-                    id: idforavailable ,
-                    collectionName: 'offers',
-                    subcollectionName: 'offers_today',
-                    email: email!,
-                    imageUrl: itemData['imageUrl'],
-                    title: itemData['name'],
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Offercard(available: available ? 'Available':'Not Available', remainingtime: '${remainingtime.toString()} ', imageUrl: itemData['imageUrl'], itemname: itemData['name'], price: discountprice.toString(), shopName: '', offerprice: '$discountPercentage', location: '', description: itemData['description']),
+                  );
+                  //  return CustomOFFERCard(
+                  //   itemId: data['item_id'],
+                  //   id: idforavailable ,
+                  //   collectionName: 'offers',
+                  //   subcollectionName: 'offers_today',
+                  //   email: email!,
+                  //   imageUrl: itemData['imageUrl'],
+                  //   title: itemData['name'],
         
-                    offer: '$discountPercentage%OFF',
-                    remainingtime: remainingtime.toString(),
-                    available: available ? 'Available' : 'Unavailable',
-                    rate: discountprice.toString()
-                  );
+                  //   offer: '$discountPercentage%OFF',
+                  //   remainingtime: remainingtime.toString(),
+                  //   available: available ? 'Available' : 'Unavailable',
+                  //   rate: discountprice.toString()
+                  // );
                   }
-                  return CustomOFFERCard(
-                      subcollectionName: 'items_offers',
-                    itemId: data['item_id'],
-                    id:idforavailable,
-                    collectionName: 'offers',
-                    email: email!,
-                    imageUrl: itemData['imageUrl'],
-                    title: itemData['name'],
-                  
-                    offer: '$discountPercentage%OFF',
-                    remainingtime: 'Expired',
-                    available: available ? 'Available' : 'Unavailable',
-                    rate: data['price']?.toString() ?? ''
-                  );
+                return SizedBox.shrink();
                 }
               );
             }

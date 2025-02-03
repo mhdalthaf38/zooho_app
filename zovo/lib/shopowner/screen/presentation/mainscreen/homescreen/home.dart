@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zovo/shopowner/screen/presentation/mainscreen/homescreen/menupage/menupage.dart';
-import 'package:zovo/shopowner/screen/presentation/mainscreen/homescreen/profilepage/profile.dart';
+
 import 'package:zovo/shopowner/screen/presentation/mainscreen/homescreen/todayofferscreen/todayoffers.dart';
 import 'package:zovo/shopowner/screen/presentation/sign_in/welcomescreen.dart';
 

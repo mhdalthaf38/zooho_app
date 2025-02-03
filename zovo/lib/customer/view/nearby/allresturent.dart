@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
-import 'package:zovo/customer/view/nearby/menuitems.dart';
+import 'package:zovo/customer/view/nearby/returentdetails/bloc/resturent_bloc.dart';
+import 'package:zovo/customer/view/nearby/returentdetails/menuitems.dart';
+import 'package:zovo/customer/view/nearby/returentdetails/resturentpage.dart';
 import 'package:zovo/customer/view/widgets/custommarker.dart';
 import 'package:zovo/customer/view/widgets/menucard.dart';
 
@@ -25,13 +28,14 @@ class TestNearby extends StatefulWidget {
 class _TestNearbyState extends State<TestNearby> {
   final _mapController = MapController();
   LatLng? _myposition;
+   LatLng? mylocation;
   LatLng? _selectedShopLocation;
   String? _selectedShopName;
   String? _selectedShopAddress;
   List<Marker> _markers = [];
   List<LatLng> _routePoints = [];
   bool _isTracking = false;
-  List image = [];
+  String image ='';
   String? useremail;
   bool? ShopStatus;
   @override
@@ -50,6 +54,7 @@ class _TestNearbyState extends State<TestNearby> {
       setState(() {
         _myposition = currentlatlang;
         _mapController.move(currentlatlang, 18);
+        mylocation = currentlatlang;
       });
     } catch (e) {
       print("Error fetching location: $e");
@@ -69,7 +74,7 @@ class _TestNearbyState extends State<TestNearby> {
         double? latitude = data['latitude'];
         double? longitude = data['longitude'];
         String shopName = data['shopName'] ?? "Unnamed Shop";
-        List imageUrl = data['shopImages'] ?? "https://via.placeholder.com/80";
+        String imageUrl = data['shopImages'] ?? "https://via.placeholder.com/80";
         String useremail = data['email'];
         bool shopstatus = data['shopstatus'];
         if (latitude != null && longitude != null) {
@@ -83,7 +88,7 @@ class _TestNearbyState extends State<TestNearby> {
                 onTap: () => _onShopMarkerTap(
                     shopLatLng, shopName, imageUrl, useremail, shopstatus),
                 child: CustomMarkerWidget(
-                    shopName: shopName, imageUrl: imageUrl[0]),
+                    shopName: shopName, imageUrl: imageUrl),
               ),
             ),
           );
@@ -97,7 +102,7 @@ class _TestNearbyState extends State<TestNearby> {
   }
 
   /// 📌 Handle Click on Shop Marker
-  Future<void> _onShopMarkerTap(LatLng shopLatLng, String shopName, List images,
+  Future<void> _onShopMarkerTap(LatLng shopLatLng, String shopName, String images,
       String email, bool statusofShop) async {
     String address = await _getAddressFromLatLng(shopLatLng);
     setState(() {
@@ -107,7 +112,7 @@ class _TestNearbyState extends State<TestNearby> {
       _selectedShopLocation = shopLatLng;
       _selectedShopName = shopName;
       _selectedShopAddress = address;
-      _mapController.move(shopLatLng, 17.0);
+      _mapController.move(shopLatLng, 18.0);
     });
   }
 
@@ -183,6 +188,7 @@ class _TestNearbyState extends State<TestNearby> {
 
   Future<void> openGoogleMaps(double originLat, double originLng,
       double destLat, double destLng) async {
+      
     final Uri googleMapsUri = Uri.parse(
       "https://www.google.com/maps/dir/?api=1&origin=$originLat,$originLng&destination=$destLat,$destLng",
     );
@@ -287,7 +293,7 @@ class _TestNearbyState extends State<TestNearby> {
                                 ),
                               ),
                             ),
-                            _imageCard(image[0]),
+                            _imageCard(image),
                             SizedBox(height: 5),
                             Padding(
                               padding:
@@ -354,15 +360,15 @@ class _TestNearbyState extends State<TestNearby> {
                                     child: ElevatedButton.icon(
                                       onPressed: () {
                                         openGoogleMaps(
-                                            _myposition!.latitude,
-                                            _myposition!.latitude,
+                                            mylocation!.latitude,
+                                            mylocation!.longitude,
                                             _selectedShopLocation!.latitude,
                                             _selectedShopLocation!.longitude);
                                       },
                                       icon: Icon(Icons.directions, size: 18),
                                       label: Text('Direction'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.teal,
+                                        backgroundColor: AppColors.accentGreen,
                                         foregroundColor: Colors.white,
                                         padding:
                                             EdgeInsets.symmetric(vertical: 12),
@@ -378,18 +384,20 @@ class _TestNearbyState extends State<TestNearby> {
                                   Expanded(
                                     child: ElevatedButton.icon(
                                       onPressed: () {
+                                       context.read<ResturentBloc>().add(Fetchshopdata(email:useremail! ));
+                                    
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => Menuitems(
-                                                      email: useremail!,
+                                                builder: (context) => Resturentpage(email:useremail! ,
+                                                     
                                                     )));
                                       },
                                       icon:
                                           Icon(Icons.fastfood_sharp, size: 18),
                                       label: Text('menu'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.teal,
+                                        backgroundColor: AppColors.accentGreen,
                                         foregroundColor: Colors.white,
                                         padding:
                                             EdgeInsets.symmetric(vertical: 12),
