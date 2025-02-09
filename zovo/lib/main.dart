@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:zovo/customer/view/alloffers/bloc/userhome_bloc.dart';
 import 'package:zovo/customer/view/homescreen/bloc/userlocation_bloc.dart';
 
 import 'package:zovo/customer/view/homescreen/homescreen.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         
                BlocProvider(create:(context)=>ResturentBloc() ),
                 BlocProvider(create:(context)=>UserlocationBloc() ),
+                BlocProvider(create:(context)=>UserhomeBloc() ),
          
             
     ],

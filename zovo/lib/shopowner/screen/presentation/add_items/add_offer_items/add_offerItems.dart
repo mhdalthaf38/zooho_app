@@ -26,6 +26,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
   String? selectedItemName;
   String? description;
   bool isloading =false;
+  String? VegOrNonVeg;
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -96,6 +97,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                                   selectedItemImage = doc['imageUrl'];
                                   selectedItemName = doc['name'];
                                   description = doc['description'];
+                                  VegOrNonVeg  = doc['VegOrNonVeg'];
                                 });
                               }
                             },
@@ -285,8 +287,11 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                   });
                     return;
                   }
-
+    
+        final shopdata =   await FirebaseFirestore.instance.collection('shops').doc(email).get();
+        String shopname = shopdata['shopName'];
                   await _firestore.collection('offers').doc(email).collection('items').doc(selectedItem).set({
+                    
                     'item_id': selectedItem,
                     'price': double.parse(_discountPriceController.text),
                     'start_date': Timestamp.fromDate(startDate!),
@@ -295,12 +300,14 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                     'Available': true,
                   });
                   await _firestore.collection('offers_today').doc('${email}offers${selectedItem}').set({
+                    'shopname':shopname,
                      'Offertype':'offers',
                     'email': email,
                     'item_id': selectedItem,
                     'item_name': selectedItemName,
                     'item_image': selectedItemImage,
                     'item_price': currentPrice,
+                     'VegOrNonVeg':VegOrNonVeg,
                     'discount_price': double.parse(_discountPriceController.text),
                     'start_time': Timestamp.fromDate(startDate!),
                     'end_date': Timestamp.fromDate(endDate!),
@@ -322,6 +329,7 @@ class _AddOfferItemsState extends State<AddOfferItems> {
                     itemError = null;
                     priceError = null;
                     dateError = null;
+                    VegOrNonVeg = null;
                   });
                 }
               },

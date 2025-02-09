@@ -221,7 +221,13 @@ class _TestNearbyState extends State<TestNearby> {
         children: [
           FlutterMap(
             mapController: _mapController,
-            options: MapOptions(initialZoom: 18),
+            options: MapOptions(initialZoom: 18,onTap: (tapPosition, point) {
+              if(_selectedShopName != null){
+              setState(() {
+                _selectedShopName = null;
+              });
+              }
+            },),
             children: [
               TileLayer(
                   urlTemplate:

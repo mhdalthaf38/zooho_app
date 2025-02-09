@@ -51,7 +51,9 @@ class Offercard extends StatelessWidget {
               child: Stack(
                 children: [
                   // Background Image
-                  Image.network(
+                 imageUrl==''?Image.asset('assets/images/noimage.jpg', width: screenWidth * 0.40,
+                    height: screenHeight * 0.195,
+                    fit: BoxFit.cover,) :Image.network(
                     imageUrl,
                     width: screenWidth * 0.40,
                     height: screenHeight * 0.195,

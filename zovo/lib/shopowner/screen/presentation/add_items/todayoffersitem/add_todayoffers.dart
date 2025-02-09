@@ -23,6 +23,7 @@ class _TodayoffersState extends State<Todayoffers> {
   DateTime? endDate;
   String? dropdownError;
   String? priceError;
+  String?VegOrNonVeg;
 bool isloading =false;
   @override
   Widget build(BuildContext context) {
@@ -94,6 +95,7 @@ bool isloading =false;
                                   selectedItemImage = doc['imageUrl'];
                                   selectedItemName = doc['name'];
                                   description = doc['description'];
+                                  VegOrNonVeg = doc['VegOrNonVeg'];
                                 });
                               }
                             },
@@ -229,7 +231,8 @@ bool isloading =false;
 
                   // Convert string to number before saving
                   final discountPrice = double.parse(_discountPriceController.text);
-
+  final shopdata =   await FirebaseFirestore.instance.collection('shops').doc(email).get();
+        String shopname = shopdata['shopName'];
                   // Add to today_offers collection
                   await _firestore.collection('today_offers').doc(email).collection('items').doc(selectedItem).set({
                     'item_id': selectedItem,
@@ -240,6 +243,7 @@ bool isloading =false;
 
                   // Add to offers_today collection
                   await _firestore.collection('offers_today').doc('$email$selectedItem').set({
+                    'shopname':shopname,
                     'Offertype':'today_offers',
                     'email': email,
                     'item_id': selectedItem,
@@ -249,6 +253,7 @@ bool isloading =false;
                     'discount_price': discountPrice.toDouble(),
                     'created_at': FieldValue.serverTimestamp(),
                     'Available': true,
+                    'VegOrNonVeg':VegOrNonVeg,
                     'description':description,
                   });
                   
@@ -265,6 +270,7 @@ bool isloading =false;
                     _discountPriceController.clear();
                     startDate = null;
                     endDate = null;
+                    VegOrNonVeg = null;
                     dropdownError = null;
                     priceError = null;
                   });

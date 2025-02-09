@@ -98,17 +98,13 @@ static Future<Uint8List> convertToJpeg(File file) async {
         }
 
            final email = FirebaseAuth.instance.currentUser?.email;
-        final shopdata =   await FirebaseFirestore.instance.collection('shops').doc(email).get();
-        String shopname = shopdata['shopName'];
         // Add item to Firebase
         await FirebaseFirestore.instance
             .collection('menu_items')
             .doc(email)
             .collection('items')
             .add({
-              'shopname':shopname,
           'name': _nameController.text,
-          'VegOrNonVeg': foodtype.text,
           'price': double.parse(_priceController.text),
           'description': _descriptionController.text,
           'imageUrl': imageUrl ?? '',
@@ -128,21 +124,14 @@ static Future<Uint8List> convertToJpeg(File file) async {
           _image = null;
         });
         }else{
-          
             final email = FirebaseAuth.instance.currentUser?.email;
-                 
-        final shopdata =   await FirebaseFirestore.instance.collection('shops').doc(email).get();
-        String shopname = shopdata['shopName'];
           await FirebaseFirestore.instance
             .collection('menu_items')
             .doc(email)
             .collection('items')
             .add({
-              'shopname':shopname,
           'name': _nameController.text,
-           'VegOrNonVeg': foodtype.text,
           'price': double.parse(_priceController.text),
-
           'description': _descriptionController.text,
           'imageUrl':'',
           'Available': true,

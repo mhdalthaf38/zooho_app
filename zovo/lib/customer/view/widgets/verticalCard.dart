@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 
 class Verticalcard extends StatelessWidget {
   final String image;
-
-  const Verticalcard({super.key, required this.image});
+final String shopname;
+final String discription;
+final String location;
+  const Verticalcard({super.key, required this.image, required this.shopname, required this.discription, required this.location});
   
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        double width = constraints.maxWidth * 0.45; // Adjust width dynamically
-        double height = width * 1.4; // Maintain aspect ratio
+        double width =MediaQuery.of(context).size.width * 0.40; // Adjust width dynamically
+        double height = width ; // Maintain aspect ratio
 
         return Container(
           width: width,
@@ -24,8 +26,9 @@ class Verticalcard extends StatelessWidget {
               // Background Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  image, // Replace with actual image URL
+                child: Image.network(
+                  
+image, // Replace with actual image URL
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
@@ -54,7 +57,7 @@ class Verticalcard extends StatelessWidget {
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        'Paal Kappa',
+                        location,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: width * 0.08, // Responsive font size
@@ -73,7 +76,7 @@ class Verticalcard extends StatelessWidget {
 
                     // Title in Malayalam
                     Text(
-                      'പാൽ കപ്പ',
+                      shopname,
                       style: TextStyle(
                         color: Colors.yellow,
                         fontSize: width * 0.1, // Responsive font size
@@ -89,7 +92,7 @@ class Verticalcard extends StatelessWidget {
 
                     // Bottom details
                     Text(
-                      'പാൽ കപ്പ ഇത്ര രുചിയോ? | Paal Kapp...',
+                      discription,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: width * 0.05, // Responsive font size
@@ -99,13 +102,7 @@ class Verticalcard extends StatelessWidget {
                     ),
 
                     // Views count
-                    Text(
-                      '34K views',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: width * 0.045, // Responsive font size
-                      ),
-                    ),
+                    
                   ],
                 ),
               ),

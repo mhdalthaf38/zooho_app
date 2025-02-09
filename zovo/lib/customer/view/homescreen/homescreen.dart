@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zovo/customer/view/alloffers/Userhompage.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:zovo/customer/view/alloffers/todayOffers/Userhompage.dart';
 import 'package:zovo/customer/view/homescreen/bloc/userlocation_bloc.dart';
 import 'package:zovo/customer/view/nearby/allresturent.dart';
+import 'package:zovo/customer/view/widgets/addresslocation.dart';
 import 'package:zovo/theme.dart';
 
 class UserHome extends StatefulWidget {
@@ -19,7 +24,8 @@ class _UserHomeState extends State<UserHome> {
 
   @override
   void initState() {
-    BlocProvider.of<UserlocationBloc>(context).add(gettinguserlocation());
+  
+   fetchLocationDetails();
     super.initState();
   }
 
@@ -28,6 +34,23 @@ class _UserHomeState extends State<UserHome> {
     _pageController.dispose();
     super.dispose();
   }
+
+void fetchLocationDetails() async {
+  LocationDetails? locationDetails = await getUserLocationAndAddress();
+  
+  if (locationDetails != null) {
+   
+    print("Latitude: ${locationDetails.latitude}");
+    print("Longitude: ${locationDetails.longitude}");
+    print("Place Name: ${locationDetails.placeName}");
+    print("City: ${locationDetails.locality}");
+    print("State: ${locationDetails.state}");
+    print("Country: ${locationDetails.country}");
+    await BlocProvider.of<UserlocationBloc>(context)..add(locationt(city:locationDetails.locality , locationName: locationDetails.placeName, latitude: locationDetails.latitude, longitude: locationDetails.longitude, state: locationDetails.state));
+  } else {
+    print("Failed to fetch location details.");
+  }
+}
 
   @override
   Widget build(BuildContext context) {

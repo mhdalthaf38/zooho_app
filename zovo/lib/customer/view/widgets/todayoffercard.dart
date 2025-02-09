@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:zovo/shopowner/screen/widgets/vegornonveg.dart';
 import 'package:zovo/theme.dart';
 
 class todayoffercard extends StatelessWidget {
@@ -11,6 +12,7 @@ class todayoffercard extends StatelessWidget {
   final String cuisines;
   final String remainingtime;
   final String discountoffer;
+  final bool VegOrNonVeg;
 
   const todayoffercard({
     Key? key,
@@ -20,7 +22,7 @@ class todayoffercard extends StatelessWidget {
     required this.rating,
     required this.deliveryTime,
     required this.cuisines,
-    required this.remainingtime , required this.discountoffer,
+    required this.remainingtime , required this.discountoffer, required this.VegOrNonVeg,
   }) : super(key: key);
 
   @override
@@ -58,7 +60,7 @@ class todayoffercard extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(imageUrl),
+                        image:imageUrl == ''?AssetImage('assets/images/noimage.jpg'):NetworkImage(imageUrl),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -139,6 +141,10 @@ class todayoffercard extends StatelessWidget {
                     ],
                 ),
               ),),
+               Positioned(
+                bottom: 25,
+                right: 10,
+                child: VegNonVegIcon(isVeg: VegOrNonVeg,),),
               
               // Ad Tag (if applicable)
              
@@ -176,14 +182,14 @@ class todayoffercard extends StatelessWidget {
               children: [
                 SizedBox(height: 4),
                 Text(
-                  cuisines.toUpperCase(),
+                  restaurantName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style:
                       TextStyle(color: AppColors.secondaryText, fontSize: 12),
                 ),
                 Text(
-                  restaurantName,
+                 cuisines.toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
